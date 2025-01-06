@@ -5,10 +5,10 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 const (
 	EMPTY = 0
 	HEAD = 1
-	WIDTH = 16
-	HEIGHT = 10
-	WINDOW_WIDTH = int32(100 * WIDTH)
-	WINDOW_HEIGHT = int32(100 * HEIGHT)
+	COLUMN_COUNT = 16
+	ROW_COUNT = 10
+	WINDOW_WIDTH = int32(100 * COLUMN_COUNT)
+	WINDOW_HEIGHT = int32(100 * ROW_COUNT)
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 		x int
 		y int
 	}
-	grid = [HEIGHT][WIDTH]int{}
+	grid = [ROW_COUNT][COLUMN_COUNT]int{}
 )
 
 func init() {
@@ -94,15 +94,11 @@ func main() {
 		grid[snake_head.row][snake_head.col] = EMPTY
 
 		snake_head.col += velocity.x
-		snake_head.col %= WIDTH
+		snake_head.col += COLUMN_COUNT
+		snake_head.col %= COLUMN_COUNT
 		snake_head.row += velocity.y
-		snake_head.row %= HEIGHT
-		if snake_head.row < 0 {
-			snake_head.row = HEIGHT - 1
-		}
-		if snake_head.col < 0 {
-			snake_head.col = WIDTH - 1
-		}
+		snake_head.row += ROW_COUNT
+		snake_head.row %= ROW_COUNT
 
 		grid[snake_head.row][snake_head.col] = HEAD
 	}
