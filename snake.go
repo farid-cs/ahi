@@ -3,6 +3,7 @@ package main
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 import "math/rand"
+import "image/color"
 
 const (
 	EMPTY = 0
@@ -22,16 +23,20 @@ var (
 		x int
 		y int
 	}
-	grid = [ROW_COUNT][COLUMN_COUNT]int{}
+	grid [ROW_COUNT][COLUMN_COUNT]color.RGBA
 )
 
 func init() {
 	snake_head.row = 4
 	snake_head.col = 7
 	velocity.x = 1
-	grid[snake_head.row][snake_head.col] = HEAD
 	food.row = int(rand.Int31() % ROW_COUNT)
 	food.col = int(rand.Int31() % COLUMN_COUNT)
+	for i := range grid {
+		for j := range grid[0] {
+			grid[i][j] = rl.Gray
+		}
+	}
 }
 
 func main() {
@@ -48,18 +53,12 @@ func main() {
 		/* display the grid */
 		for i := range grid {
 			for j := range grid[0] {
-				var color = rl.Gray
-
-				if grid[i][j] == HEAD {
-					color = rl.Green
-				}
-
 				rl.DrawRectangle(
 					int32(j * 100 + 2),
 					int32(i * 100 + 2),
 					96,
 					96,
-					color,
+					grid[i][j],
 				)
 			}
 		}
@@ -97,7 +96,7 @@ func main() {
 		}
 
 		/* update state */
-		grid[snake_head.row][snake_head.col] = EMPTY
+		grid[snake_head.row][snake_head.col] = rl.Gray
 
 		snake_head.col += velocity.x
 		snake_head.col += COLUMN_COUNT
@@ -106,7 +105,7 @@ func main() {
 		snake_head.row += ROW_COUNT
 		snake_head.row %= ROW_COUNT
 
-		grid[snake_head.row][snake_head.col] = HEAD
+		grid[snake_head.row][snake_head.col] = rl.Green
 
 		if snake_head.row == food.row && snake_head.col == food.col {
 			food.row = int(rand.Int31() % ROW_COUNT)
