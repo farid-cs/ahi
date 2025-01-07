@@ -2,6 +2,8 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
+import "math/rand"
+
 const (
 	EMPTY = 0
 	HEAD = 1
@@ -12,7 +14,7 @@ const (
 )
 
 var (
-	snake_head struct {
+	snake_head, food struct {
 		row int
 		col int
 	}
@@ -28,6 +30,8 @@ func init() {
 	snake_head.col = 7
 	velocity.x = 1
 	grid[snake_head.row][snake_head.col] = HEAD
+	food.row = int(rand.Int31() % ROW_COUNT)
+	food.col = int(rand.Int31() % COLUMN_COUNT)
 }
 
 func main() {
@@ -59,6 +63,8 @@ func main() {
 				)
 			}
 		}
+
+		rl.DrawCircle(int32(food.col * 100 + 50), int32(food.row * 100 + 50), 48.0, rl.Blue);
 
 		rl.EndDrawing()
 
@@ -101,5 +107,10 @@ func main() {
 		snake_head.row %= ROW_COUNT
 
 		grid[snake_head.row][snake_head.col] = HEAD
+
+		if snake_head.row == food.row && snake_head.col == food.col {
+			food.row = int(rand.Int31() % ROW_COUNT)
+			food.col = int(rand.Int31() % COLUMN_COUNT)
+		}
 	}
 }
