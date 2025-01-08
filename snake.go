@@ -44,9 +44,11 @@ func main() {
 
 		rl.ClearBackground(BACKGROUND_COLOR)
 
-		rl.DrawRectangle(int32(snake_head.col * 100), int32(snake_head.row * 100), 100, 100, HEAD_COLOR)
+		rl.DrawRectangle(int32(snake_head.col * 100),
+			int32(snake_head.row * 100), 100, 100, HEAD_COLOR)
 
-		rl.DrawCircle(int32(food.col * 100 + 50), int32(food.row * 100 + 50), 50.0, FOOD_COLOR);
+		rl.DrawCircle(int32(food.col * 100 + 50),
+			int32(food.row * 100 + 50), 50.0, FOOD_COLOR)
 
 		rl.EndDrawing()
 
@@ -80,6 +82,7 @@ func main() {
 		snake_head.col += velocity.x
 		snake_head.col += COLUMN_COUNT
 		snake_head.col %= COLUMN_COUNT
+
 		snake_head.row += velocity.y
 		snake_head.row += ROW_COUNT
 		snake_head.row %= ROW_COUNT
