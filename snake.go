@@ -2,7 +2,7 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
-import "math/rand"
+import "math/rand/v2"
 import "image/color"
 
 const (
@@ -30,8 +30,8 @@ func init() {
 	snake_head.row = 4
 	snake_head.col = 7
 	velocity.x = 1
-	food.row = int(rand.Int31() % ROW_COUNT)
-	food.col = int(rand.Int31() % COLUMN_COUNT)
+	food.row = rand.IntN(ROW_COUNT)
+	food.col = rand.IntN(COLUMN_COUNT)
 	for i := range grid {
 		for j := range grid[0] {
 			grid[i][j] = rl.Gray
@@ -108,8 +108,8 @@ func main() {
 		grid[snake_head.row][snake_head.col] = rl.Green
 
 		if snake_head.row == food.row && snake_head.col == food.col {
-			food.row = int(rand.Int31() % ROW_COUNT)
-			food.col = int(rand.Int31() % COLUMN_COUNT)
+			food.row = rand.IntN(ROW_COUNT)
+			food.col = rand.IntN(COLUMN_COUNT)
 		}
 	}
 }
