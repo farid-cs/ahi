@@ -108,7 +108,7 @@ func main() {
 
 		grid[snake_head.row][snake_head.col] = HEAD_COLOR
 
-		if snake_head.row == food.row && snake_head.col == food.col {
+		if snake_head == food {
 			food.row = rand.IntN(ROW_COUNT)
 			food.col = rand.IntN(COLUMN_COUNT)
 		}
