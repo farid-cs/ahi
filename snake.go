@@ -11,14 +11,18 @@ const (
 	WINDOW_HEIGHT = ROW_COUNT * 100
 )
 
+type Position struct {
+	row int
+	col int
+}
+
 var (
 	BACKGROUND_COLOR = rl.Gray
 	HEAD_COLOR = rl.Green
+	TAIL_COLOR = rl.Yellow
 	FOOD_COLOR = rl.Blue
-	snake_head, food struct {
-		row int
-		col int
-	}
+	snake []Position
+	food Position
 	velocity struct {
 		x int
 		y int
@@ -26,8 +30,7 @@ var (
 )
 
 func init() {
-	snake_head.row = 4
-	snake_head.col = 7
+	snake = append(snake, Position{row: 4, col: 7})
 	velocity.x = 1
 	food.row = rand.IntN(ROW_COUNT)
 	food.col = rand.IntN(COLUMN_COUNT)
@@ -37,15 +40,20 @@ func main() {
 	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "snake")
 	defer rl.CloseWindow()
 
-	rl.SetTargetFPS(4)
+	rl.SetTargetFPS(6)
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 
 		rl.ClearBackground(BACKGROUND_COLOR)
 
-		rl.DrawRectangle(int32(snake_head.col * 100),
-			int32(snake_head.row * 100), 100, 100, HEAD_COLOR)
+		for i := 1; i != len(snake); i++ {
+			rl.DrawRectangle(int32(snake[i].col * 100),
+				int32(snake[i].row * 100), 100, 100, TAIL_COLOR)
+		}
+
+		rl.DrawRectangle(int32(snake[0].col * 100),
+			int32(snake[0].row * 100), 100, 100, HEAD_COLOR)
 
 		rl.DrawCircle(int32(food.col * 100 + 50),
 			int32(food.row * 100 + 50), 50.0, FOOD_COLOR)
@@ -79,15 +87,21 @@ func main() {
 			velocity.y = 0
 		}
 
-		snake_head.col += velocity.x
-		snake_head.col += COLUMN_COUNT
-		snake_head.col %= COLUMN_COUNT
+		last_segment := snake[len(snake)-1]
+		for i := len(snake)-1; i != 0; i-- {
+			snake[i] = snake[i-1]
+		}
 
-		snake_head.row += velocity.y
-		snake_head.row += ROW_COUNT
-		snake_head.row %= ROW_COUNT
+		snake[0].col += velocity.x
+		snake[0].col += COLUMN_COUNT
+		snake[0].col %= COLUMN_COUNT
 
-		if snake_head == food {
+		snake[0].row += velocity.y
+		snake[0].row += ROW_COUNT
+		snake[0].row %= ROW_COUNT
+
+		if snake[0] == food {
+			snake = append(snake, last_segment)
 			food.row = rand.IntN(ROW_COUNT)
 			food.col = rand.IntN(COLUMN_COUNT)
 		}
