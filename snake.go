@@ -6,8 +6,6 @@ import "math/rand/v2"
 import "image/color"
 
 const (
-	EMPTY = 0
-	HEAD = 1
 	COLUMN_COUNT = 16
 	ROW_COUNT = 10
 	WINDOW_WIDTH = int32(100 * COLUMN_COUNT)
@@ -15,6 +13,9 @@ const (
 )
 
 var (
+	CELL_COLOR = rl.Gray
+	HEAD_COLOR = rl.Green
+	FOOD_COLOR = rl.Blue
 	snake_head, food struct {
 		row int
 		col int
@@ -23,7 +24,7 @@ var (
 		x int
 		y int
 	}
-	grid [ROW_COUNT][COLUMN_COUNT]color.RGBA
+	grid [ROW_COUNT][COLUMN_COUNT] color.RGBA
 )
 
 func init() {
@@ -63,7 +64,7 @@ func main() {
 			}
 		}
 
-		rl.DrawCircle(int32(food.col * 100 + 50), int32(food.row * 100 + 50), 48.0, rl.Blue);
+		rl.DrawCircle(int32(food.col * 100 + 50), int32(food.row * 100 + 50), 48.0, FOOD_COLOR);
 
 		rl.EndDrawing()
 
@@ -96,7 +97,7 @@ func main() {
 		}
 
 		/* update state */
-		grid[snake_head.row][snake_head.col] = rl.Gray
+		grid[snake_head.row][snake_head.col] = CELL_COLOR
 
 		snake_head.col += velocity.x
 		snake_head.col += COLUMN_COUNT
@@ -105,7 +106,7 @@ func main() {
 		snake_head.row += ROW_COUNT
 		snake_head.row %= ROW_COUNT
 
-		grid[snake_head.row][snake_head.col] = rl.Green
+		grid[snake_head.row][snake_head.col] = HEAD_COLOR
 
 		if snake_head.row == food.row && snake_head.col == food.col {
 			food.row = rand.IntN(ROW_COUNT)
