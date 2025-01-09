@@ -29,18 +29,19 @@ var (
 	}
 )
 
-func init() {
-	snake = append(snake, Position{row: 4, col: 7})
-	velocity.x = 1
-	food.row = rand.IntN(ROW_COUNT)
-	food.col = rand.IntN(COLUMN_COUNT)
-}
-
 func main() {
 	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "snake")
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(6)
+
+init_state:
+	snake = []Position{}
+	snake = append(snake, Position{row: 4, col: 7})
+	velocity.x = 1
+	velocity.y = 0
+	food.row = rand.IntN(ROW_COUNT)
+	food.col = rand.IntN(COLUMN_COUNT)
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -99,6 +100,12 @@ func main() {
 		snake[0].row += velocity.y
 		snake[0].row += ROW_COUNT
 		snake[0].row %= ROW_COUNT
+
+		for i := 1; i != len(snake); i++ {
+			if snake[i] == snake[0] {
+				goto init_state
+			}
+		}
 
 		if snake[0] == food {
 			snake = append(snake, last_segment)
