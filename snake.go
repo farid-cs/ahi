@@ -44,8 +44,7 @@ func init_state() {
 	snake = []Vec2{}
 	snake = append(snake, Vec2{7, 4})
 	velocity = Vec2{1, 0}
-	food.x = rand.IntN(COLUMN_COUNT)
-	food.y = rand.IntN(ROW_COUNT)
+	food = spawn_food()
 }
 
 func draw_frame() {
@@ -110,7 +109,13 @@ func update_state() {
 
 	if snake[0] == food {
 		snake = append(snake, last_segment)
-		food.x = rand.IntN(COLUMN_COUNT)
-		food.y = rand.IntN(ROW_COUNT)
+		food = spawn_food()
+	}
+}
+
+func spawn_food() Vec2 {
+	return Vec2 {
+		x: rand.IntN(COLUMN_COUNT),
+		y: rand.IntN(ROW_COUNT),
 	}
 }
