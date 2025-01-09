@@ -4,17 +4,17 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 
 import "math/rand/v2"
 
+type Vec2 struct {
+	x int
+	y int
+}
+
 const (
 	COLUMN_COUNT = 16
 	ROW_COUNT = 10
 	WINDOW_WIDTH = COLUMN_COUNT * 100
 	WINDOW_HEIGHT = ROW_COUNT * 100
 )
-
-type Vec2 struct {
-	x int
-	y int
-}
 
 var (
 	BACKGROUND_COLOR = rl.Gray
@@ -42,11 +42,10 @@ func main() {
 
 func init_state() {
 	snake = []Vec2{}
-	snake = append(snake, Vec2{y: 4, x: 7})
-	velocity.x = 1
-	velocity.y = 0
-	food.y = rand.IntN(ROW_COUNT)
+	snake = append(snake, Vec2{7, 4})
+	velocity = Vec2{1, 0}
 	food.x = rand.IntN(COLUMN_COUNT)
+	food.y = rand.IntN(ROW_COUNT)
 }
 
 func draw_frame() {
@@ -72,30 +71,22 @@ func update_state() {
 	last_segment := snake[len(snake)-1]
 
 	switch rl.GetKeyPressed() {
-	case rl.KeyUp:
-		if velocity.y != 0 {
-			break
-		}
-		velocity.x = 0
-		velocity.y = -1
-	case rl.KeyDown:
-		if velocity.y != 0 {
-			break
-		}
-		velocity.x = 0
-		velocity.y = +1
 	case rl.KeyLeft:
-		if velocity.x != 0 {
-			break
+		if velocity.x == 0 {
+			velocity = Vec2{-1, 0}
 		}
-		velocity.x = -1
-		velocity.y = 0
 	case rl.KeyRight:
-		if velocity.x != 0 {
-			break
+		if velocity.x == 0 {
+			velocity = Vec2{+1, 0}
 		}
-		velocity.x = +1
-		velocity.y = 0
+	case rl.KeyUp:
+		if velocity.y == 0 {
+			velocity = Vec2{0, -1}
+		}
+	case rl.KeyDown:
+		if velocity.y == 0 {
+			velocity = Vec2{0, +1}
+		}
 	}
 
 	for i := len(snake)-1; i != 0; i-- {
@@ -119,7 +110,7 @@ func update_state() {
 
 	if snake[0] == food {
 		snake = append(snake, last_segment)
-		food.y = rand.IntN(ROW_COUNT)
 		food.x = rand.IntN(COLUMN_COUNT)
+		food.y = rand.IntN(ROW_COUNT)
 	}
 }
