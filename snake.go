@@ -11,9 +11,9 @@ const (
 	WINDOW_HEIGHT = ROW_COUNT * 100
 )
 
-type Position struct {
-	row int
-	col int
+type Vec2 struct {
+	x int
+	y int
 }
 
 var (
@@ -21,12 +21,9 @@ var (
 	HEAD_COLOR = rl.Green
 	TAIL_COLOR = rl.Yellow
 	FOOD_COLOR = rl.Blue
-	snake []Position
-	food Position
-	velocity struct {
-		x int
-		y int
-	}
+	snake []Vec2
+	food Vec2
+	velocity Vec2
 )
 
 func main() {
@@ -36,12 +33,12 @@ func main() {
 	rl.SetTargetFPS(6)
 
 init_state:
-	snake = []Position{}
-	snake = append(snake, Position{row: 4, col: 7})
+	snake = []Vec2{}
+	snake = append(snake, Vec2{y: 4, x: 7})
 	velocity.x = 1
 	velocity.y = 0
-	food.row = rand.IntN(ROW_COUNT)
-	food.col = rand.IntN(COLUMN_COUNT)
+	food.y = rand.IntN(ROW_COUNT)
+	food.x = rand.IntN(COLUMN_COUNT)
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -49,15 +46,15 @@ init_state:
 		rl.ClearBackground(BACKGROUND_COLOR)
 
 		for i := 1; i != len(snake); i++ {
-			rl.DrawRectangle(int32(snake[i].col * 100),
-				int32(snake[i].row * 100), 100, 100, TAIL_COLOR)
+			rl.DrawRectangle(int32(snake[i].x * 100),
+				int32(snake[i].y * 100), 100, 100, TAIL_COLOR)
 		}
 
-		rl.DrawRectangle(int32(snake[0].col * 100),
-			int32(snake[0].row * 100), 100, 100, HEAD_COLOR)
+		rl.DrawRectangle(int32(snake[0].x * 100),
+			int32(snake[0].y * 100), 100, 100, HEAD_COLOR)
 
-		rl.DrawCircle(int32(food.col * 100 + 50),
-			int32(food.row * 100 + 50), 50.0, FOOD_COLOR)
+		rl.DrawCircle(int32(food.x * 100 + 50),
+			int32(food.y * 100 + 50), 50.0, FOOD_COLOR)
 
 		rl.EndDrawing()
 
@@ -93,13 +90,13 @@ init_state:
 			snake[i] = snake[i-1]
 		}
 
-		snake[0].col += velocity.x
-		snake[0].col += COLUMN_COUNT
-		snake[0].col %= COLUMN_COUNT
+		snake[0].x += velocity.x
+		snake[0].x += COLUMN_COUNT
+		snake[0].x %= COLUMN_COUNT
 
-		snake[0].row += velocity.y
-		snake[0].row += ROW_COUNT
-		snake[0].row %= ROW_COUNT
+		snake[0].y += velocity.y
+		snake[0].y += ROW_COUNT
+		snake[0].y %= ROW_COUNT
 
 		for i := 1; i != len(snake); i++ {
 			if snake[i] == snake[0] {
@@ -109,8 +106,8 @@ init_state:
 
 		if snake[0] == food {
 			snake = append(snake, last_segment)
-			food.row = rand.IntN(ROW_COUNT)
-			food.col = rand.IntN(COLUMN_COUNT)
+			food.y = rand.IntN(ROW_COUNT)
+			food.x = rand.IntN(COLUMN_COUNT)
 		}
 	}
 }
