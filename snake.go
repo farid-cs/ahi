@@ -114,8 +114,17 @@ func update_state() {
 }
 
 func spawn_food() Vec2 {
-	return Vec2 {
+GENERATE:
+	random_pos := Vec2{
 		x: rand.IntN(COLUMN_COUNT),
 		y: rand.IntN(ROW_COUNT),
 	}
+
+	for i := range snake {
+		if random_pos == snake[i] {
+			goto GENERATE
+		}
+	}
+
+	return random_pos
 }
