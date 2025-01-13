@@ -26,20 +26,6 @@ var (
 	velocity Vec2
 )
 
-func main() {
-	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "snake")
-	defer rl.CloseWindow()
-
-	rl.SetTargetFPS(6)
-
-	init_state()
-
-	for !rl.WindowShouldClose() {
-		draw_frame()
-		update_state()
-	}
-}
-
 func init_state() {
 	snake = []Vec2{}
 	snake = append(snake, Vec2{7, 4})
@@ -64,6 +50,22 @@ func draw_frame() {
 		int32(food.y * 100 + 50), 50.0, FOOD_COLOR)
 
 	rl.EndDrawing()
+}
+
+func spawn_food() Vec2 {
+GENERATE:
+	random_pos := Vec2{
+		x: rand.IntN(COLUMN_COUNT),
+		y: rand.IntN(ROW_COUNT),
+	}
+
+	for i := range snake {
+		if random_pos == snake[i] {
+			goto GENERATE
+		}
+	}
+
+	return random_pos
 }
 
 func update_state() {
@@ -113,18 +115,16 @@ func update_state() {
 	}
 }
 
-func spawn_food() Vec2 {
-GENERATE:
-	random_pos := Vec2{
-		x: rand.IntN(COLUMN_COUNT),
-		y: rand.IntN(ROW_COUNT),
-	}
+func main() {
+	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "snake")
+	defer rl.CloseWindow()
 
-	for i := range snake {
-		if random_pos == snake[i] {
-			goto GENERATE
-		}
-	}
+	rl.SetTargetFPS(6)
 
-	return random_pos
+	init_state()
+
+	for !rl.WindowShouldClose() {
+		draw_frame()
+		update_state()
+	}
 }
