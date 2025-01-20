@@ -3,6 +3,7 @@ package main
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 import "math/rand/v2"
+import "slices"
 
 type Vec2 struct {
 	x int
@@ -54,19 +55,16 @@ func draw_frame() {
 }
 
 func spawn_food() Vec2 {
-GENERATE:
-	random_pos := Vec2{
-		x: rand.IntN(COLUMN_COUNT),
-		y: rand.IntN(ROW_COUNT),
-	}
+	for {
+		random_pos := Vec2{
+			x: rand.IntN(COLUMN_COUNT),
+			y: rand.IntN(ROW_COUNT),
+		}
 
-	for i := range snake {
-		if random_pos == snake[i] {
-			goto GENERATE
+		if !slices.Contains(snake, random_pos) {
+			return random_pos
 		}
 	}
-
-	return random_pos
 }
 
 func update_state() {
