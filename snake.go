@@ -14,6 +14,7 @@ const (
 	ROW_COUNT = 10
 	WINDOW_WIDTH = COLUMN_COUNT * 100
 	WINDOW_HEIGHT = ROW_COUNT * 100
+	WINDOW_TITLE = "snake"
 )
 
 var (
@@ -116,7 +117,7 @@ func update_state() {
 }
 
 func main() {
-	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "snake")
+	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(6)
