@@ -3,7 +3,7 @@ package main
 import "math/rand/v2"
 import "slices"
 
-const COLUMN_COUNT = 20
+const COLUMN_COUNT = 16
 const ROW_COUNT = 10
 
 type Vec2 struct {
