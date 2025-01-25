@@ -20,6 +20,15 @@ const (
 	FPS = 6
 )
 
+const (
+	EVENT_NONE = iota
+	EVENT_LEFT
+	EVENT_RIGHT
+	EVENT_UP
+	EVENT_DOWN
+	EVENT_CLOSE
+)
+
 var (
 	BACKGROUND_COLOR = rl.Gray
 	HEAD_COLOR = rl.Green
@@ -28,6 +37,7 @@ var (
 	snake []Vec2
 	food Vec2
 	velocity Vec2
+	event int
 )
 
 func init_state() {
@@ -56,6 +66,20 @@ func draw_frame() {
 	rl.EndDrawing()
 }
 
+func next_event() int {
+	switch rl.GetKeyPressed() {
+	case rl.KeyUp:
+		return EVENT_UP
+	case rl.KeyDown:
+		return EVENT_DOWN
+	case rl.KeyLeft:
+		return EVENT_LEFT
+	case rl.KeyRight:
+		return EVENT_RIGHT
+	}
+	return EVENT_NONE
+}
+
 func spawn_food() Vec2 {
 	for {
 		random_pos := Vec2{
@@ -69,23 +93,23 @@ func spawn_food() Vec2 {
 	}
 }
 
-func update_state() {
+func update_state(event int) {
 	last_segment := snake[len(snake)-1]
 
-	switch rl.GetKeyPressed() {
-	case rl.KeyLeft:
+	switch event {
+	case EVENT_LEFT:
 		if velocity.x == 0 {
 			velocity = Vec2{-1, 0}
 		}
-	case rl.KeyRight:
+	case EVENT_RIGHT:
 		if velocity.x == 0 {
 			velocity = Vec2{+1, 0}
 		}
-	case rl.KeyUp:
+	case EVENT_UP:
 		if velocity.y == 0 {
 			velocity = Vec2{0, -1}
 		}
-	case rl.KeyDown:
+	case EVENT_DOWN:
 		if velocity.y == 0 {
 			velocity = Vec2{0, +1}
 		}
@@ -126,6 +150,7 @@ func main() {
 
 	for !rl.WindowShouldClose() {
 		draw_frame()
-		update_state()
+		event := next_event()
+		update_state(event)
 	}
 }
