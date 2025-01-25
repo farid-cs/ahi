@@ -11,10 +11,11 @@ type Vec2 struct {
 }
 
 const (
+	FACTOR = 100
 	COLUMN_COUNT = 16
 	ROW_COUNT = 10
-	WINDOW_WIDTH = COLUMN_COUNT * 100
-	WINDOW_HEIGHT = ROW_COUNT * 100
+	WINDOW_WIDTH = COLUMN_COUNT * FACTOR
+	WINDOW_HEIGHT = ROW_COUNT * FACTOR
 	WINDOW_TITLE = "snake"
 	FPS = 6
 )
@@ -42,15 +43,15 @@ func draw_frame() {
 	rl.ClearBackground(BACKGROUND_COLOR)
 
 	for i := 1; i != len(snake); i++ {
-		rl.DrawRectangle(int32(snake[i].x * 100),
-			int32(snake[i].y * 100), 100, 100, TAIL_COLOR)
+		rl.DrawRectangle(int32(snake[i].x * FACTOR),
+			int32(snake[i].y * FACTOR), FACTOR, FACTOR, TAIL_COLOR)
 	}
 
-	rl.DrawRectangle(int32(snake[0].x * 100),
-		int32(snake[0].y * 100), 100, 100, HEAD_COLOR)
+	rl.DrawRectangle(int32(snake[0].x * FACTOR),
+		int32(snake[0].y * FACTOR), FACTOR, FACTOR, HEAD_COLOR)
 
-	rl.DrawCircle(int32(food.x * 100 + 50),
-		int32(food.y * 100 + 50), 50.0, FOOD_COLOR)
+	rl.DrawCircle(int32(food.x * FACTOR + FACTOR / 2),
+		int32(food.y * FACTOR + FACTOR / 2), FACTOR / 2, FOOD_COLOR)
 
 	rl.EndDrawing()
 }
