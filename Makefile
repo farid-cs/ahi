@@ -1,8 +1,6 @@
 APP = snake
 PREFIX = /usr/local/bin
 
-all: $(APP)
-
 $(APP):
 	go build -o $@
 
@@ -13,6 +11,6 @@ uninstall:
 	rm -f $(PREFIX)/$(APP)
 
 clean:
-	rm -f $(APP)
+	go clean
 
-.PHONY: all clean install
+.PHONY: $(APP) clean install
