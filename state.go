@@ -15,6 +15,7 @@ var (
 	snake []Vec2
 	food Vec2
 	velocity Vec2
+	win bool
 )
 
 func spawn_food() Vec2 {
@@ -39,6 +40,11 @@ func init_state() {
 
 func update_state(event int) {
 	last_segment := snake[len(snake)-1]
+
+	if len(snake) == COLUMN_COUNT * ROW_COUNT {
+		win = true
+		return
+	}
 
 	switch event {
 	case EVENT_LEFT:

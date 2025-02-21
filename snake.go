@@ -17,7 +17,7 @@ func main() {
 
 	init_state()
 
-	for !rl.WindowShouldClose() {
+	for !rl.WindowShouldClose() && !win {
 		draw_frame()
 		event := next_event()
 		update_state(event)
