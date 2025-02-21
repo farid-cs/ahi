@@ -32,7 +32,7 @@ func spawn_food() Vec2 {
 
 func init_state() {
 	snake = []Vec2{}
-	snake = append(snake, Vec2{7, 4})
+	snake = append(snake, Vec2{COLUMN_COUNT/2, ROW_COUNT/2})
 	velocity = Vec2{1, 0}
 	food = spawn_food()
 }
