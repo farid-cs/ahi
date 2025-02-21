@@ -3,6 +3,7 @@ package main
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 const FACTOR = 100
+const GRID_WIDTH = 1
 
 var (
 	BACKGROUND_COLOR = rl.Gray
@@ -16,16 +17,26 @@ func draw_frame() {
 
 	rl.ClearBackground(BACKGROUND_COLOR)
 
-	for i := 1; i != len(snake); i++ {
-		rl.DrawRectangle(int32(snake[i].x * FACTOR),
-			int32(snake[i].y * FACTOR), FACTOR, FACTOR, TAIL_COLOR)
+	for i := 0; i != COLUMN_COUNT; i++ {
+		rl.DrawRectangle(int32(i * (FACTOR + GRID_WIDTH) + FACTOR),
+			0, GRID_WIDTH, WINDOW_HEIGHT, rl.Black)
 	}
 
-	rl.DrawRectangle(int32(snake[0].x * FACTOR),
-		int32(snake[0].y * FACTOR), FACTOR, FACTOR, HEAD_COLOR)
+	for i := 0; i != ROW_COUNT; i++ {
+		rl.DrawRectangle(0, int32(i * (FACTOR + GRID_WIDTH) + FACTOR),
+		WINDOW_WIDTH, GRID_WIDTH, rl.Black)
+	}
 
-	rl.DrawCircle(int32(food.x * FACTOR + FACTOR / 2),
-		int32(food.y * FACTOR + FACTOR / 2), FACTOR / 2, FOOD_COLOR)
+	for i := 1; i != len(snake); i++ {
+		rl.DrawRectangle(int32(snake[i].x * (FACTOR + GRID_WIDTH)),
+			int32(snake[i].y * (FACTOR + GRID_WIDTH)), FACTOR, FACTOR, TAIL_COLOR)
+	}
+
+	rl.DrawRectangle(int32(snake[0].x * (FACTOR + GRID_WIDTH)),
+		int32(snake[0].y * (FACTOR + GRID_WIDTH)), FACTOR, FACTOR, HEAD_COLOR)
+
+	rl.DrawCircle(int32(food.x * (FACTOR + GRID_WIDTH) + FACTOR / 2),
+		int32(food.y * (FACTOR + GRID_WIDTH) + FACTOR / 2), FACTOR / 2, FOOD_COLOR)
 
 	rl.EndDrawing()
 }
