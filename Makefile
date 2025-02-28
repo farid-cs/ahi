@@ -1,4 +1,4 @@
-APP = snake
+APP = ahi
 PREFIX = /usr/local/bin
 
 $(APP):

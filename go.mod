@@ -1,4 +1,4 @@
-module github.com/farid-cs/snake
+module github.com/farid-cs/ahi
 
 go 1.23.4
 
