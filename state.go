@@ -1,5 +1,6 @@
 package main
 
+import rl "github.com/gen2brain/raylib-go/raylib"
 import "math/rand/v2"
 import "slices"
 
@@ -38,7 +39,7 @@ func init_state() {
 	food = spawn_food()
 }
 
-func update_state(event int) {
+func update_state() {
 	last_segment := snake[len(snake)-1]
 
 	if len(snake) == COLUMN_COUNT * ROW_COUNT {
@@ -46,22 +47,22 @@ func update_state(event int) {
 		return
 	}
 
-	switch event {
-	case EVENT_LEFT:
-		if velocity.x == 0 {
-			velocity = Vec2{-1, 0}
-		}
-	case EVENT_RIGHT:
-		if velocity.x == 0 {
-			velocity = Vec2{+1, 0}
-		}
-	case EVENT_UP:
+	switch rl.GetKeyPressed() {
+	case rl.KeyUp:
 		if velocity.y == 0 {
 			velocity = Vec2{0, -1}
 		}
-	case EVENT_DOWN:
+	case rl.KeyDown:
 		if velocity.y == 0 {
 			velocity = Vec2{0, +1}
+		}
+	case rl.KeyLeft:
+		if velocity.x == 0 {
+			velocity = Vec2{-1, 0}
+		}
+	case rl.KeyRight:
+		if velocity.x == 0 {
+			velocity = Vec2{+1, 0}
 		}
 	}
 
