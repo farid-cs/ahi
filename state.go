@@ -44,11 +44,6 @@ func init_state() {
 func update_state() {
 	last_segment := snake[len(snake)-1]
 
-	if len(snake) == COLUMN_COUNT * ROW_COUNT {
-		win = true
-		return
-	}
-
 	switch rl.GetKeyPressed() {
 	case rl.KeyUp:
 		if velocity.y == 0 {
@@ -89,7 +84,11 @@ func update_state() {
 
 	if snake[0] == food {
 		snake = append(snake, last_segment)
-		food = spawn_food()
+		if len(snake) == COLUMN_COUNT * ROW_COUNT {
+			win = true
+			return
+		}
 		score += 1
+		food = spawn_food()
 	}
 }
