@@ -17,6 +17,7 @@ var (
 	food Vec2
 	velocity Vec2
 	win bool
+	score int
 )
 
 func spawn_food() Vec2 {
@@ -37,6 +38,7 @@ func init_state() {
 	snake = append(snake, Vec2{COLUMN_COUNT/2, ROW_COUNT/2})
 	velocity = Vec2{1, 0}
 	food = spawn_food()
+	score = 0
 }
 
 func update_state() {
@@ -88,5 +90,6 @@ func update_state() {
 	if snake[0] == food {
 		snake = append(snake, last_segment)
 		food = spawn_food()
+		score += 1
 	}
 }
