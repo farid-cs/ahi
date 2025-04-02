@@ -13,11 +13,11 @@ type Vec2 struct {
 }
 
 var (
-	snake []Vec2
-	food Vec2
+	snake    []Vec2
+	food     Vec2
 	velocity Vec2
-	win bool
-	score int
+	win      bool
+	score    int
 )
 
 func spawn_food() Vec2 {
@@ -35,7 +35,7 @@ func spawn_food() Vec2 {
 
 func init_state() {
 	snake = []Vec2{}
-	snake = append(snake, Vec2{COLUMN_COUNT/2, ROW_COUNT/2})
+	snake = append(snake, Vec2{COLUMN_COUNT / 2, ROW_COUNT / 2})
 	velocity = Vec2{1, 0}
 	food = spawn_food()
 	score = 0
@@ -63,7 +63,7 @@ func update_state() {
 		}
 	}
 
-	for i := len(snake)-1; i != 0; i-- {
+	for i := len(snake) - 1; i != 0; i-- {
 		snake[i] = snake[i-1]
 	}
 
@@ -84,7 +84,7 @@ func update_state() {
 
 	if snake[0] == food {
 		snake = append(snake, last_segment)
-		if len(snake) == COLUMN_COUNT * ROW_COUNT {
+		if len(snake) == COLUMN_COUNT*ROW_COUNT {
 			win = true
 			return
 		}
