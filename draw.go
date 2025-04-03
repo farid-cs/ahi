@@ -4,46 +4,46 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 
 import "fmt"
 
-const FACTOR = 100
-const LINE_WIDTH = 1
-const FONT_SIZE = FACTOR * 0.75
+const Factor = 100
+const LineWidth = 1
+const FontSize = Factor * 0.75
 
 var (
-	BACKGROUND_COLOR = rl.Gray
-	HEAD_COLOR       = rl.Green
-	TAIL_COLOR       = rl.Yellow
-	FOOD_COLOR       = rl.Blue
-	LINE_COLOR       = rl.Black
-	SCORE_COLOR      = rl.Black
+	ColorBackground = rl.Gray
+	ColorHead       = rl.Green
+	ColorTail       = rl.Yellow
+	ColorFood       = rl.Blue
+	ColorLine       = rl.Black
+	ColorScore      = rl.Black
 )
 
-func draw_frame() {
+func DrawFrame() {
 	rl.BeginDrawing()
 
-	rl.ClearBackground(BACKGROUND_COLOR)
+	rl.ClearBackground(ColorBackground)
 
-	for i := 0; i != COLUMN_COUNT; i++ {
-		rl.DrawRectangle(int32(i*(FACTOR+LINE_WIDTH)+FACTOR),
-			0, LINE_WIDTH, GRID_HEIGHT, LINE_COLOR)
+	for i := 0; i != ColumnCount; i++ {
+		rl.DrawRectangle(int32(i*(Factor+LineWidth)+Factor),
+			0, LineWidth, GridHeight, ColorLine)
 	}
 
-	for i := 0; i != ROW_COUNT; i++ {
-		rl.DrawRectangle(0, int32(i*(FACTOR+LINE_WIDTH)+FACTOR),
-			GRID_WIDTH, LINE_WIDTH, LINE_COLOR)
+	for i := 0; i != RowCount; i++ {
+		rl.DrawRectangle(0, int32(i*(Factor+LineWidth)+Factor),
+			GridWidth, LineWidth, ColorLine)
 	}
 
 	for i := 1; i != len(snake); i++ {
-		rl.DrawRectangle(int32(snake[i].x*(FACTOR+LINE_WIDTH)),
-			int32(snake[i].y*(FACTOR+LINE_WIDTH)), FACTOR, FACTOR, TAIL_COLOR)
+		rl.DrawRectangle(int32(snake[i].x*(Factor+LineWidth)),
+			int32(snake[i].y*(Factor+LineWidth)), Factor, Factor, ColorTail)
 	}
 
-	rl.DrawRectangle(int32(snake[0].x*(FACTOR+LINE_WIDTH)),
-		int32(snake[0].y*(FACTOR+LINE_WIDTH)), FACTOR, FACTOR, HEAD_COLOR)
+	rl.DrawRectangle(int32(snake[0].x*(Factor+LineWidth)),
+		int32(snake[0].y*(Factor+LineWidth)), Factor, Factor, ColorHead)
 
-	rl.DrawCircle(int32(food.x*(FACTOR+LINE_WIDTH)+FACTOR/2),
-		int32(food.y*(FACTOR+LINE_WIDTH)+FACTOR/2), FACTOR/2, FOOD_COLOR)
+	rl.DrawCircle(int32(food.x*(Factor+LineWidth)+Factor/2),
+		int32(food.y*(Factor+LineWidth)+Factor/2), Factor/2, ColorFood)
 
-	rl.DrawText(fmt.Sprintf("%d", score), 0, GRID_HEIGHT, FONT_SIZE, SCORE_COLOR)
+	rl.DrawText(fmt.Sprintf("%d", score), 0, GridHeight, FontSize, ColorScore)
 
 	rl.EndDrawing()
 }
