@@ -13,6 +13,8 @@ type Vec2 struct {
 }
 
 const (
+	Version = "0.1"
+
 	ColumnCount = 16
 	RowCount    = 10
 	Factor      = 100
@@ -20,7 +22,7 @@ const (
 	GridWidth  = ColumnCount*Factor + (ColumnCount-1)*LineWidth
 	GridHeight = RowCount*Factor + (RowCount-1)*LineWidth
 
-	WindowTitle  = "snake"
+	WindowTitle  = "ahi " + Version
 	WindowWidth  = GridWidth
 	WindowHeight = GridHeight + FontSize
 
@@ -150,10 +152,8 @@ func DrawFrame() {
 }
 
 func main() {
-	version := "0.1"
-
 	if len(os.Args) > 1 && os.Args[1] == "-v" {
-		fmt.Fprintf(os.Stderr, "ahi %s\n", version)
+		fmt.Fprintf(os.Stderr, "ahi %s\n", Version)
 		return
 	}
 
