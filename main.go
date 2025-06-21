@@ -29,7 +29,9 @@ const (
 	LineWidth = 1
 	FontSize  = Factor * 0.75
 
-	FPS = 6
+	FPS = 220
+
+	dt = 1.0 / 5.0
 )
 
 var (
@@ -40,11 +42,13 @@ var (
 	ColorLine       = rl.Black
 	ColorScore      = rl.Black
 
-	snake    []Vec2
-	food     Vec2
-	velocity Vec2
-	win      bool
-	score    int
+	snake          []Vec2
+	food           Vec2
+	velocity       Vec2
+	newVelocity    Vec2
+	win            bool
+	score          int
+	lastUpdateTime float64
 )
 
 func spawnFood() Vec2 {
@@ -63,9 +67,11 @@ func spawnFood() Vec2 {
 func InitState() {
 	snake = []Vec2{}
 	snake = append(snake, Vec2{ColumnCount / 2, RowCount / 2})
-	velocity = Vec2{1, 0}
+	velocity = Vec2{+1, 0}
+	newVelocity = velocity
 	food = spawnFood()
 	score = 0
+	lastUpdateTime = rl.GetTime()
 }
 
 func UpdateState() {
@@ -73,21 +79,21 @@ func UpdateState() {
 
 	switch rl.GetKeyPressed() {
 	case rl.KeyUp:
-		if velocity.y == 0 {
-			velocity = Vec2{0, -1}
-		}
+		newVelocity = Vec2{0, -1}
 	case rl.KeyDown:
-		if velocity.y == 0 {
-			velocity = Vec2{0, +1}
-		}
+		newVelocity = Vec2{0, +1}
 	case rl.KeyLeft:
-		if velocity.x == 0 {
-			velocity = Vec2{-1, 0}
-		}
+		newVelocity = Vec2{-1, 0}
 	case rl.KeyRight:
-		if velocity.x == 0 {
-			velocity = Vec2{+1, 0}
-		}
+		newVelocity = Vec2{+1, 0}
+	}
+
+	if rl.GetTime()-lastUpdateTime <= dt {
+		return
+	}
+
+	if newVelocity.x*velocity.x+newVelocity.y*velocity.y == 0 {
+		velocity = newVelocity
 	}
 
 	for i := len(snake) - 1; i != 0; i-- {
@@ -118,6 +124,8 @@ func UpdateState() {
 		score += 1
 		food = spawnFood()
 	}
+
+	lastUpdateTime = rl.GetTime()
 }
 
 func DrawFrame() {
