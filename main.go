@@ -29,7 +29,7 @@ const (
 	LineWidth = 1
 	FontSize  = Factor * 0.75
 
-	FPS = 220
+	FPS = 120
 
 	dt = 1.0 / 5.0
 )
