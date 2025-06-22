@@ -13,7 +13,7 @@ type Vec2 struct {
 }
 
 const (
-	Version = "0.1"
+	Version = "0.2"
 
 	ColumnCount = 16
 	RowCount    = 10
