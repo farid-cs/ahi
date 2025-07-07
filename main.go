@@ -6,7 +6,7 @@ import "fmt"
 import "os"
 
 const (
-	Version = "0.2"
+	Version = "0.3"
 
 	WindowTitle  = "ahi " + Version
 	WindowWidth  = GridWidth
