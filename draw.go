@@ -39,13 +39,13 @@ func DrawGrid() {
 	}
 }
 
-func DrawSnake(snake Snake) {
-	for i := 1; i != len(snake); i++ {
-		rl.DrawRectangle(int32(snake[i].x*(Factor+LineWidth)),
-			int32(snake[i].y*(Factor+LineWidth)), Factor, Factor, ColorTail)
+func DrawSnake(snake *Snake) {
+	for i := 1; i != snake.length; i++ {
+		rl.DrawRectangle(int32(snake.body[i].x*(Factor+LineWidth)),
+			int32(snake.body[i].y*(Factor+LineWidth)), Factor, Factor, ColorTail)
 	}
-	rl.DrawRectangle(int32(snake[0].x*(Factor+LineWidth)),
-		int32(snake[0].y*(Factor+LineWidth)), Factor, Factor, ColorHead)
+	rl.DrawRectangle(int32(snake.body[0].x*(Factor+LineWidth)),
+		int32(snake.body[0].y*(Factor+LineWidth)), Factor, Factor, ColorHead)
 }
 
 func DrawScore(score int) {
@@ -59,7 +59,7 @@ func DrawWorld(w *World) {
 
 	DrawGrid()
 
-	DrawSnake(w.snake)
+	DrawSnake(&w.snake)
 
 	DrawFood(w.food)
 

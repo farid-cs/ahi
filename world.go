@@ -13,7 +13,10 @@ type Vec2 struct {
 	y int
 }
 
-type Snake []Vec2
+type Snake struct {
+	body [ColumnCount*RowCount]Vec2
+	length int
+}
 
 type World struct {
 	snake    Snake
@@ -34,8 +37,8 @@ const (
 var DefaultVelocity = Vec2{+1, 0}
 var DefaultPosition = Vec2{ColumnCount / 2, RowCount / 2}
 
-func spawnFood(snake Snake) Vec2 {
-	if len(snake) >= RowCount*ColumnCount {
+func spawnFood(snake *Snake) Vec2 {
+	if snake.length >= RowCount*ColumnCount {
 		panic("nowhere to place food")
 	}
 	for {
@@ -44,27 +47,27 @@ func spawnFood(snake Snake) Vec2 {
 			y: rand.IntN(RowCount),
 		}
 
-		if !slices.Contains(snake, random_pos) {
+		if !slices.Contains(snake.body[:snake.length], random_pos) {
 			return random_pos
 		}
 	}
 }
 
-func (self Snake) Move(velocity Vec2) int {
-	for i := len(self) - 1; i != 0; i-- {
-		self[i] = self[i-1]
+func (self *Snake) Move(velocity Vec2) int {
+	for i := self.length - 1; i != 0; i-- {
+		self.body[i] = self.body[i-1]
 	}
 
-	self[0].x += velocity.x
-	self[0].x += ColumnCount
-	self[0].x %= ColumnCount
+	self.body[0].x += velocity.x
+	self.body[0].x += ColumnCount
+	self.body[0].x %= ColumnCount
 
-	self[0].y += velocity.y
-	self[0].y += RowCount
-	self[0].y %= RowCount
+	self.body[0].y += velocity.y
+	self.body[0].y += RowCount
+	self.body[0].y %= RowCount
 
-	for i := 1; i != len(self); i++ {
-		if self[i] == self[0] {
+	for i := 1; i != self.length; i++ {
+		if self.body[i] == self.body[0] {
 			return -1
 		}
 	}
@@ -73,15 +76,16 @@ func (self Snake) Move(velocity Vec2) int {
 }
 
 func (self *World) Init() {
-	self.snake = Snake{}
-	self.snake = append(self.snake, DefaultPosition)
+	self.snake.body[0] = DefaultPosition
+	self.snake.length = 1
 	self.velocity = DefaultVelocity
-	self.food = spawnFood(self.snake)
+	self.food = spawnFood(&self.snake)
 	self.score = 0
+	self.win = false
 }
 
 func (self *World) Update(ev int) {
-	lastSegment := self.snake[len(self.snake)-1]
+	lastSegment := self.snake.body[self.snake.length-1]
 	velocity := self.velocity
 
 	switch ev {
@@ -104,13 +108,14 @@ func (self *World) Update(ev int) {
 		return
 	}
 
-	if self.snake[0] == self.food {
-		self.snake = append(self.snake, lastSegment)
-		if len(self.snake) == ColumnCount*RowCount {
+	if self.snake.body[0] == self.food {
+		self.snake.body[self.snake.length] = lastSegment
+		self.snake.length += 1
+		if self.snake.length == ColumnCount*RowCount {
 			self.win = true
 			return
 		}
 		self.score += 1
-		self.food = spawnFood(self.snake)
+		self.food = spawnFood(&self.snake)
 	}
 }
