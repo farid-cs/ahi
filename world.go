@@ -3,6 +3,11 @@ package main
 import "math/rand/v2"
 import "slices"
 
+const (
+	ColumnCount = 16
+	RowCount    = 10
+)
+
 type Vec2 struct {
 	x int
 	y int
