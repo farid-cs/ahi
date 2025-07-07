@@ -16,11 +16,11 @@ type Vec2 struct {
 type Snake []Vec2
 
 type World struct {
-	snake          Snake
-	food           Vec2
-	velocity       Vec2
-	score          int
-	win            bool
+	snake    Snake
+	food     Vec2
+	velocity Vec2
+	score    int
+	win      bool
 }
 
 const (

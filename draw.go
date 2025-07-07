@@ -5,7 +5,7 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 import "fmt"
 
 const (
-	Factor      = 100
+	Factor = 100
 
 	GridWidth  = ColumnCount*Factor + (ColumnCount-1)*LineWidth
 	GridHeight = RowCount*Factor + (RowCount-1)*LineWidth
