@@ -8,6 +8,7 @@
 
 #include "draw.h"
 #include "event.h"
+#include "config.h"
 
 constexpr auto WindowTitle = "ahi " VERSION;
 constexpr auto WindowWidth = GridWidth;

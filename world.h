@@ -9,7 +9,6 @@
 
 #include "vec2.h"
 #include "lcg.h"
-#include "config.h"
 
 namespace rs = std::ranges;
 namespace vs = std::views;
@@ -106,7 +105,7 @@ constexpr void World::Init()
 	self.win = false;
 }
 
-constexpr World::World() : lcg{SEED} {}
+constexpr World::World() : snake{}, food{}, direction{}, lcg{SEED}, score{}, win{} {}
 
 constexpr void World::Update(const Event ev)
 {
