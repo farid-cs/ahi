@@ -11,6 +11,7 @@ configure_file(
 cmake = import('cmake')
 opt_var = cmake.subproject_options()
 opt_var.add_cmake_defines({'GLFW_BUILD_WAYLAND': true})
+opt_var.set_override_option('warning_level', '0')
 raylib = cmake.subproject('raylib', options: opt_var)
 libraylib = raylib.dependency('raylib')
 
