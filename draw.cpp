@@ -46,7 +46,7 @@ static void DrawScore(int score)
 	DrawText(std::format("{}", score).c_str(), 0, GridHeight, FontSize, ColorScore);
 }
 
-void DrawWorld(World &w)
+void DrawWorld(const World &w)
 {
 	BeginDrawing();
 
