@@ -24,7 +24,11 @@ int main(int argc, char *argv[]) {
 	double lastUpdateTime;
 	World world;
 
-	if (argc > 1 && !std::strcmp(argv[1], "-v")) {
+	if (argc > 1) {
+		if (std::strcmp(argv[1], "-v")) {
+			std::println(std::cerr, "{} [-v]", argv[0]);
+			return EXIT_FAILURE;
+		}
 		std::println(std::cerr, "{}", WindowTitle);
 		return EXIT_SUCCESS;
 	}
