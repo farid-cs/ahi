@@ -2,13 +2,18 @@
 #define AHI_LCG_H
 
 struct LCG {
-	constexpr LCG(size_t s) : seed{s} {}
+	constexpr LCG() : seed{} {}
+	constexpr void Init(std::size_t s) {
+		LCG &self = *this;
+
+		self.seed = s;
+	}
 	constexpr size_t operator()() {
 		seed = seed * 7 + 3;
 		return seed;
 	}
 private:
-	size_t seed;
+	std::size_t seed;
 };
 
 #endif

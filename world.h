@@ -12,20 +12,20 @@
 
 namespace rs = std::ranges;
 namespace vs = std::views;
-using Position = Vec2<size_t>;
+using Position = Vec2<std::size_t>;
 using Direction = Vec2<int>;
 
-constexpr size_t ColumnCount {16};
-constexpr size_t RowCount {10};
+constexpr std::size_t ColumnCount {16};
+constexpr std::size_t RowCount {10};
 constexpr Direction DefaultDirection {+1, 0};
 constexpr Position DefaultPosition {ColumnCount / 2, RowCount / 2};
-constexpr size_t SEED {1};
+constexpr std::size_t SEED {1};
 
 struct Snake {
 	std::array<Position, ColumnCount*RowCount> body;
 	std::size_t length;
+	constexpr Snake() : body{}, length{} {}
 	constexpr void Init();
-	constexpr Snake();
 	constexpr int Move(const Direction direction);
 };
 
@@ -42,9 +42,9 @@ struct World {
 	Position food;
 	Direction direction;
 	LCG lcg;
-	int score;
+	std::size_t score;
 	bool win;
-	constexpr World();
+	constexpr World() : score{}, win{} {}
 	constexpr void Init();
 	constexpr void Update(const Event ev);
 };
@@ -70,8 +70,6 @@ constexpr void Snake::Init()
 	self.body[0] = DefaultPosition;
 	self.length = 1;
 }
-
-constexpr Snake::Snake() : body{}, length{} {}
 
 constexpr int Snake::Move(const Direction direction)
 {
@@ -100,12 +98,11 @@ constexpr void World::Init()
 
 	self.snake.Init();
 	self.direction = DefaultDirection;
+	self.lcg.Init(SEED);
 	self.food = spawnFood(self.snake, self.lcg);
 	self.score = 0;
 	self.win = false;
 }
-
-constexpr World::World() : snake{}, food{}, direction{}, lcg{SEED}, score{}, win{} {}
 
 constexpr void World::Update(const Event ev)
 {
