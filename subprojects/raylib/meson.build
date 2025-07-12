@@ -33,4 +33,4 @@ raylib = static_library('raylib',
   include_directories : incdir
 )
 
-raylib_dep = declare_dependency(include_directories: include_directories('src'), link_with: raylib)
+raylib_dep = declare_dependency(include_directories: 'src', link_with: raylib)
