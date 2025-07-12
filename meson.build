@@ -1,4 +1,7 @@
-project('ahi', 'cpp', version: '0.3')
+project('ahi', 'cpp',
+  version: '0.3',
+  default_options: ['werror=true', 'warning_level=3']
+)
 
 version = meson.project_version()
 conf = configuration_data()
@@ -8,16 +11,17 @@ configure_file(
   configuration: conf
 )
 
-cmake = import('cmake')
-opt_var = cmake.subproject_options()
-opt_var.add_cmake_defines({'GLFW_BUILD_WAYLAND': true})
-opt_var.set_override_option('warning_level', '0')
-raylib = cmake.subproject('raylib', options: opt_var)
-libraylib = raylib.dependency('raylib')
+raylib_dep = subproject('raylib').get_variable('raylib_dep')
+
+source = files(
+  'ahi.cpp',
+  'draw.cpp',
+  'event.cpp',
+)
 
 executable(
   'ahi',
-  ['ahi.cpp', 'draw.cpp', 'event.cpp'],
-  cpp_args: ['-std=c++23', '-Wall', '-Wextra', '-Werror', '-Wpedantic'],
-  dependencies: [libraylib]
+  source,
+  cpp_args: '-std=c++23',
+  dependencies: raylib_dep
 )
