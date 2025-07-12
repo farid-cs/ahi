@@ -1,4 +1,3 @@
-#include <format>
 #include <cstdlib>
 #include <cstring>
 #include <print>
