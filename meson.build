@@ -14,9 +14,9 @@ configure_file(
 raylib_dep = subproject('raylib').get_variable('raylib_dep')
 
 source = files(
-  'ahi.cpp',
-  'draw.cpp',
-  'event.cpp',
+  'src/ahi.cpp',
+  'src/draw.cpp',
+  'src/event.cpp',
 )
 
 executable(
