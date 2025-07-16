@@ -35,12 +35,40 @@ constexpr auto FPS = 120;
 
 constexpr auto dt = 1.0 / 5.0;
 
-int main(int argc, char *argv[]) {
-	Controller con;
-	Event ev;
-	double lastUpdateTime;
-	World world;
+static Controller con {};
+static Event ev {};
+static double lastUpdateTime {};
+static World world {};
 
+void setup(void)
+{
+	InitWindow(WindowWidth, WindowHeight, WindowTitle);
+
+	SetTargetFPS(FPS);
+
+	world.Init();
+	lastUpdateTime = GetTime();
+}
+
+void run(void)
+{
+	while (!WindowShouldClose() && !world.win) {
+		DrawWorld(world);
+		ev = con.NextEvent();
+		if (GetTime()-lastUpdateTime > dt) {
+			world.Update(ev);
+			lastUpdateTime = GetTime();
+		}
+	}
+}
+
+void cleanup(void)
+{
+	CloseWindow();
+}
+
+int main(int argc, char *argv[])
+{
 	if (argc > 1) {
 		if (std::strcmp(argv[1], "-v")) {
 			std::println(std::cerr, "{} [-v]", argv[0]);
@@ -49,23 +77,8 @@ int main(int argc, char *argv[]) {
 		std::println(std::cerr, "{}", WindowTitle);
 		return EXIT_SUCCESS;
 	}
-
-	InitWindow(WindowWidth, WindowHeight, WindowTitle);
-
-	SetTargetFPS(FPS);
-
-	world.Init();
-	lastUpdateTime = GetTime();
-
-	while(!WindowShouldClose() && !world.win) {
-		DrawWorld(world);
-		ev = con.NextEvent();
-		if (GetTime()-lastUpdateTime > dt) {
-			world.Update(ev);
-			lastUpdateTime = GetTime();
-		}
-	}
-
-	CloseWindow();
+	setup();
+	run();
+	cleanup();
 	return EXIT_SUCCESS;
 }
