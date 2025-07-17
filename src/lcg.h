@@ -21,14 +21,12 @@
 
 struct LCG {
 	constexpr LCG() : seed{} {}
-	constexpr void Init(std::size_t s) {
-		LCG &self = *this;
-
+	constexpr void Init(this LCG &self, std::size_t s) {
 		self.seed = s;
 	}
-	constexpr size_t operator()() {
-		seed = seed * 7 + 3;
-		return seed;
+	constexpr size_t operator()(this LCG &self) {
+		self.seed = self.seed * 7 + 3;
+		return self.seed;
 	}
 private:
 	std::size_t seed;

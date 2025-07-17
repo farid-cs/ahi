@@ -43,8 +43,8 @@ struct Snake {
 	std::array<Position, ColumnCount*RowCount> body;
 	std::size_t length;
 	constexpr Snake() : body{}, length{} {}
-	constexpr void Init();
-	constexpr int Move(const Direction direction);
+	constexpr void Init(this Snake &self);
+	constexpr int Move(this Snake &self, const Direction direction);
 };
 
 enum class Event {
@@ -63,8 +63,8 @@ struct World {
 	std::size_t score;
 	bool win;
 	constexpr World() : score{}, win{} {}
-	constexpr void Init();
-	constexpr void Update(const Event ev);
+	constexpr void Init(this World &self);
+	constexpr void Update(this World &self, const Event ev);
 };
 
 constexpr Position spawnFood(Snake &snake, LCG &lcg)
@@ -81,18 +81,14 @@ constexpr Position spawnFood(Snake &snake, LCG &lcg)
 	}
 }
 
-constexpr void Snake::Init()
+constexpr void Snake::Init(this Snake &self)
 {
-	Snake &self {*this};
-
 	self.body[0] = DefaultPosition;
 	self.length = 1;
 }
 
-constexpr int Snake::Move(const Direction direction)
+constexpr int Snake::Move(this Snake &self, const Direction direction)
 {
-	Snake &self {*this};
-
 	std::shift_right(self.body.begin(), self.body.end()-1, 1);
 
 	self.body[0].x += direction.x;
@@ -110,10 +106,8 @@ constexpr int Snake::Move(const Direction direction)
 	return 0;
 }
 
-constexpr void World::Init()
+constexpr void World::Init(this World &self)
 {
-	World &self {*this};
-
 	self.snake.Init();
 	self.direction = DefaultDirection;
 	self.lcg.Init(SEED);
@@ -122,11 +116,10 @@ constexpr void World::Init()
 	self.win = false;
 }
 
-constexpr void World::Update(const Event ev)
+constexpr void World::Update(this World &self, const Event ev)
 {
-	World &self {*this};
-	const auto lastSegment {self.snake.body[self.snake.length-1]};
 	auto direction {self.direction};
+	const auto lastSegment {self.snake.body[self.snake.length-1]};
 
 	switch (ev) {
 	case Event::Up:

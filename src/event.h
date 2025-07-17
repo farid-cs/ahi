@@ -23,8 +23,8 @@
 
 struct Controller {
 	Event event;
-	constexpr Controller() : event{Event::None} {}
-	Event NextEvent();
+	constexpr Controller() : event{} {}
+	Event NextEvent(this Controller &self);
 };
 
 #endif
