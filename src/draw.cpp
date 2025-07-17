@@ -38,11 +38,11 @@ static void DrawFood(const Position &food)
 
 static void DrawGrid()
 {
-	for (auto line : vs::iota(size_t(0), ColumnCount))
+	for (auto line : vs::iota(0uz, ColumnCount))
 		DrawRectangle(line*(Factor+LineWidth)+Factor,
 			0, LineWidth, GridHeight, ColorLine);
 
-	for (auto line : vs::iota(size_t(0), RowCount))
+	for (auto line : vs::iota(0uz, RowCount))
 		DrawRectangle(0, line*(Factor+LineWidth)+Factor,
 			GridWidth, LineWidth, ColorLine);
 }

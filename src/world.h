@@ -33,11 +33,11 @@ namespace vs = std::views;
 using Position = Vec2<std::size_t>;
 using Direction = Vec2<int>;
 
-constexpr std::size_t ColumnCount {16};
-constexpr std::size_t RowCount {10};
+constexpr auto ColumnCount {16uz};
+constexpr auto RowCount {10uz};
 constexpr Direction DefaultDirection {+1, 0};
 constexpr Position DefaultPosition {ColumnCount / 2, RowCount / 2};
-constexpr std::size_t SEED {1};
+constexpr auto SEED {1uz};
 
 struct Snake {
 	std::array<Position, ColumnCount*RowCount> body;

@@ -27,13 +27,13 @@
 #include "event.h"
 #include "config.h"
 
-constexpr auto WindowTitle = "ahi " VERSION;
-constexpr auto WindowWidth = GridWidth;
-constexpr auto WindowHeight = GridHeight + FontSize;
+constexpr auto WindowTitle {"ahi " VERSION};
+constexpr auto WindowWidth {GridWidth};
+constexpr auto WindowHeight {GridHeight + FontSize};
 
-constexpr auto FPS = 120;
+constexpr auto FPS {120};
 
-constexpr auto dt = 1.0 / 5.0;
+constexpr auto dt {1.0 / 5.0};
 
 static Controller con {};
 static Event ev {};
