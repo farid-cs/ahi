@@ -21,9 +21,9 @@
 
 template <typename T>
 struct Vec2 {
-	T x;
-	T y;
-	constexpr Vec2() : x{}, y{} {}
+	T x{};
+	T y{};
+	constexpr Vec2() = default;
 	constexpr Vec2(T x, T y) : x{x}, y{y} {};
 	constexpr bool operator== (const Vec2<T> &other) const = default;
 };

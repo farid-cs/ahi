@@ -40,9 +40,9 @@ constexpr Position DefaultPosition {ColumnCount / 2, RowCount / 2};
 constexpr auto SEED {1uz};
 
 struct Snake {
-	std::array<Position, ColumnCount*RowCount> body;
-	std::size_t length;
-	constexpr Snake() : body{}, length{} {}
+	std::array<Position, ColumnCount*RowCount> body{};
+	std::size_t length{};
+	constexpr Snake() = default;
 	constexpr void Init(this Snake &self);
 	constexpr int Move(this Snake &self, const Direction direction);
 };
@@ -56,13 +56,13 @@ enum class Event {
 };
 
 struct World {
-	Snake snake;
-	Position food;
-	Direction direction;
-	LCG lcg;
-	std::size_t score;
-	bool win;
-	constexpr World() : score{}, win{} {}
+	Snake snake{};
+	Position food{};
+	Direction direction{};
+	LCG lcg{};
+	std::size_t score{};
+	bool win{};
+	constexpr World() = default;
 	constexpr void Init(this World &self);
 	constexpr void Update(this World &self, const Event ev);
 };
