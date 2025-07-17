@@ -46,17 +46,17 @@ void setup(void)
 
 	SetTargetFPS(FPS);
 
-	world.Init();
+	world.init();
 	lastUpdateTime = GetTime();
 }
 
 void run(void)
 {
 	while (!WindowShouldClose() && !world.win) {
-		DrawWorld(world);
-		ev = con.NextEvent();
+		draw_world(world);
+		ev = con.next_event();
 		if (GetTime()-lastUpdateTime > dt) {
-			world.Update(ev);
+			world.update(ev);
 			lastUpdateTime = GetTime();
 		}
 	}

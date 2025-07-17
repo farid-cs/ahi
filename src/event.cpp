@@ -2,7 +2,7 @@
 
 #include "event.h"
 
-Event Controller::NextEvent(this Controller &self) {
+Event Controller::next_event(this Controller &self) {
 	switch (GetKeyPressed()) {
 	case KEY_UP:
 		self.event = Event::Up;

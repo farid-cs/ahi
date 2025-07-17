@@ -21,7 +21,7 @@
 
 struct LCG {
 	constexpr LCG() = default;
-	constexpr void Init(this LCG &self, std::size_t s) {
+	constexpr void init(this LCG &self, std::size_t s) {
 		self.seed = s;
 	}
 	constexpr size_t operator()(this LCG &self) {

@@ -24,7 +24,7 @@
 struct Controller {
 	Event event{};
 	constexpr Controller() = default;
-	Event NextEvent(this Controller &self);
+	Event next_event(this Controller &self);
 };
 
 #endif

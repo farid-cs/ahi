@@ -29,6 +29,6 @@ constexpr auto GridHeight = RowCount*Factor + (RowCount-1)*LineWidth;
 
 constexpr auto FontSize = Factor * 0.75;
 
-void DrawWorld(const World &w);
+void draw_world(const World &w);
 
 #endif

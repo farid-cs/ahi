@@ -43,8 +43,8 @@ struct Snake {
 	std::array<Position, ColumnCount*RowCount> body{};
 	std::size_t length{};
 	constexpr Snake() = default;
-	constexpr void Init(this Snake &self);
-	constexpr int Move(this Snake &self, const Direction direction);
+	constexpr void init(this Snake &self);
+	constexpr int move(this Snake &self, const Direction direction);
 };
 
 enum class Event {
@@ -63,11 +63,11 @@ struct World {
 	std::size_t score{};
 	bool win{};
 	constexpr World() = default;
-	constexpr void Init(this World &self);
-	constexpr void Update(this World &self, const Event ev);
+	constexpr void init(this World &self);
+	constexpr void update(this World &self, const Event ev);
 };
 
-constexpr Position spawnFood(Snake &snake, LCG &lcg)
+constexpr Position spawn_food(Snake &snake, LCG &lcg)
 {
 	for (;;) {
 		Position random_pos {
@@ -81,13 +81,13 @@ constexpr Position spawnFood(Snake &snake, LCG &lcg)
 	}
 }
 
-constexpr void Snake::Init(this Snake &self)
+constexpr void Snake::init(this Snake &self)
 {
 	self.body[0] = DefaultPosition;
 	self.length = 1;
 }
 
-constexpr int Snake::Move(this Snake &self, const Direction direction)
+constexpr int Snake::move(this Snake &self, const Direction direction)
 {
 	std::shift_right(self.body.begin(), self.body.end()-1, 1);
 
@@ -106,17 +106,17 @@ constexpr int Snake::Move(this Snake &self, const Direction direction)
 	return 0;
 }
 
-constexpr void World::Init(this World &self)
+constexpr void World::init(this World &self)
 {
-	self.snake.Init();
+	self.snake.init();
 	self.direction = DefaultDirection;
-	self.lcg.Init(SEED);
-	self.food = spawnFood(self.snake, self.lcg);
+	self.lcg.init(SEED);
+	self.food = spawn_food(self.snake, self.lcg);
 	self.score = 0;
 	self.win = false;
 }
 
-constexpr void World::Update(this World &self, const Event ev)
+constexpr void World::update(this World &self, const Event ev)
 {
 	auto direction {self.direction};
 	const auto lastSegment {self.snake.body[self.snake.length-1]};
@@ -142,8 +142,8 @@ constexpr void World::Update(this World &self, const Event ev)
 		self.direction = direction;
 	}
 
-	if (self.snake.Move(self.direction) < 0) {
-		self.Init();
+	if (self.snake.move(self.direction) < 0) {
+		self.init();
 		return;
 	}
 
@@ -155,7 +155,7 @@ constexpr void World::Update(this World &self, const Event ev)
 			return;
 		}
 		self.score += 1;
-		self.food = spawnFood(self.snake, self.lcg);
+		self.food = spawn_food(self.snake, self.lcg);
 	}
 }
 

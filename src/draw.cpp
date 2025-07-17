@@ -30,7 +30,7 @@ constexpr auto ColorFood       {BLUE};
 constexpr auto ColorLine       {BLACK};
 constexpr auto ColorScore      {BLACK};
 
-static void DrawFood(const Position &food)
+static void draw_food(const Position &food)
 {
 	auto X {food.x*(Factor+LineWidth)+Factor/2};
 	auto Y {food.y*(Factor+LineWidth)+Factor/2};
@@ -38,7 +38,7 @@ static void DrawFood(const Position &food)
 	DrawCircle(X, Y, Factor/2, ColorFood);
 }
 
-static void DrawGrid()
+static void draw_grid()
 {
 	int X{}, Y{};
 
@@ -55,7 +55,7 @@ static void DrawGrid()
 	}
 }
 
-static void DrawSnake(const Snake &snake)
+static void draw_snake(const Snake &snake)
 {
 	const auto &head = snake.body.front();
 	int X{}, Y{};
@@ -71,24 +71,24 @@ static void DrawSnake(const Snake &snake)
 	DrawRectangle(X, Y, Factor, Factor, ColorHead);
 }
 
-static void DrawScore(int score)
+static void draw_score(int score)
 {
 	DrawText(std::format("{}", score).c_str(), 0, GridHeight, FontSize, ColorScore);
 }
 
-void DrawWorld(const World &w)
+void draw_world(const World &w)
 {
 	BeginDrawing();
 
 	ClearBackground(ColorBackground);
 
-	DrawGrid();
+	draw_grid();
 
-	DrawSnake(w.snake);
+	draw_snake(w.snake);
 
-	DrawFood(w.food);
+	draw_food(w.food);
 
-	DrawScore(w.score);
+	draw_score(w.score);
 
 	EndDrawing();
 }
