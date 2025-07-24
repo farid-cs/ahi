@@ -20,7 +20,7 @@
 
 #include "event.h"
 
-void next_event(Event &event)
+void next_event(std::optional<Event> &event)
 {
 	switch (GetKeyPressed()) {
 	case KEY_UP:

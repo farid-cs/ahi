@@ -21,6 +21,8 @@
 
 #include "world.h"
 
-void next_event(Event &event);
+#include <optional>
+
+void next_event(std::optional<Event> &event);
 
 #endif

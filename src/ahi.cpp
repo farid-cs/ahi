@@ -35,7 +35,7 @@ constexpr auto FPS {120};
 
 constexpr auto dt {1.0 / 5.0};
 
-static Event ev {};
+static std::optional<Event> ev {};
 static double lastUpdateTime {};
 static World world {};
 
@@ -55,7 +55,9 @@ void run(void)
 		draw_world(world);
 		next_event(ev);
 		if (GetTime()-lastUpdateTime > dt) {
-			world.update(ev);
+			if (ev.has_value())
+				world.handle(ev.value());
+			world.update();
 			lastUpdateTime = GetTime();
 		}
 	}

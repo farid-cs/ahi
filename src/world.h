@@ -48,7 +48,6 @@ struct Snake {
 };
 
 enum class Event {
-	None,
 	Up,
 	Right,
 	Down,
@@ -64,7 +63,8 @@ struct World {
 	bool win{};
 	constexpr World() = default;
 	constexpr void init(this World &self);
-	constexpr void update(this World &self, const Event ev);
+	constexpr void handle(this World &self, const Event ev);
+	constexpr void update(this World &self);
 };
 
 constexpr Position spawn_food(Snake &snake, LCG &lcg)
@@ -116,10 +116,9 @@ constexpr void World::init(this World &self)
 	self.win = false;
 }
 
-constexpr void World::update(this World &self, const Event ev)
+constexpr void World::handle(this World &self, const Event ev)
 {
 	auto direction {self.direction};
-	const auto lastSegment {self.snake.body[self.snake.length-1]};
 
 	switch (ev) {
 	case Event::Up:
@@ -134,13 +133,16 @@ constexpr void World::update(this World &self, const Event ev)
 	case Event::Right:
 		direction = Direction{+1, 0};
 		break;
-	case Event::None:
-		break;
 	}
 
 	if (direction.x*self.direction.x+direction.y*self.direction.y == 0) {
 		self.direction = direction;
 	}
+}
+
+constexpr void World::update(this World &self)
+{
+	const auto lastSegment {self.snake.body[self.snake.length-1]};
 
 	if (self.snake.move(self.direction) < 0) {
 		self.init();
