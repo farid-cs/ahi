@@ -57,7 +57,8 @@ void run(void)
 		if (GetTime()-lastUpdateTime > dt) {
 			if (ev.has_value())
 				world.handle(ev.value());
-			world.update();
+			if (world.update())
+				ev = {};
 			lastUpdateTime = GetTime();
 		}
 	}

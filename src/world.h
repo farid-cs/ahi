@@ -64,7 +64,7 @@ struct World {
 	constexpr World() = default;
 	constexpr void init(this World &self);
 	constexpr void handle(this World &self, const Event ev);
-	constexpr void update(this World &self);
+	constexpr bool update(this World &self);
 };
 
 constexpr Position spawn_food(Snake &snake, LCG &lcg)
@@ -140,25 +140,27 @@ constexpr void World::handle(this World &self, const Event ev)
 	}
 }
 
-constexpr void World::update(this World &self)
+constexpr bool World::update(this World &self)
 {
 	const auto lastSegment {self.snake.body[self.snake.length-1]};
 
 	if (self.snake.move(self.direction) < 0) {
 		self.init();
-		return;
+		return true;
 	}
 
-	if (self.snake.body[0].x == self.food.x && self.snake.body[0].y == self.food.y) {
+	if (self.snake.body[0] == self.food) {
 		self.snake.body[self.snake.length] = lastSegment;
 		self.snake.length += 1;
 		if (self.snake.length == ColumnCount*RowCount) {
 			self.win = true;
-			return;
+			return false;
 		}
 		self.score += 1;
 		self.food = spawn_food(self.snake, self.lcg);
 	}
+
+	return false;
 }
 
 #endif
