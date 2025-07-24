@@ -1,5 +1,5 @@
 project('ahi', 'cpp',
-  version: '0.3',
+  version: '0.4',
   default_options: ['werror=true', 'warning_level=3']
 )
 
