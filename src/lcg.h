@@ -23,10 +23,12 @@
 
 struct LCG {
 	constexpr LCG() = default;
-	constexpr void init(this LCG &self, std::size_t s) {
+	constexpr void init(this LCG &self, std::size_t s)
+	{
 		self.seed = s;
 	}
-	constexpr size_t operator()(this LCG &self) {
+	constexpr size_t operator()(this LCG &self)
+	{
 		self.seed = self.seed * 7 + 3;
 		return self.seed;
 	}
