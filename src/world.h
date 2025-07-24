@@ -20,13 +20,13 @@
 #define AHI_WORLD_H
 
 #include <algorithm>
-#include <cstddef>
 #include <array>
+#include <cstddef>
 #include <random>
 #include <ranges>
 
-#include "vec2.h"
 #include "lcg.h"
+#include "vec2.h"
 
 namespace rs = std::ranges;
 namespace vs = std::views;

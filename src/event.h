@@ -19,9 +19,9 @@
 #ifndef AHI_EVENT_H
 #define AHI_EVENT_H
 
-#include "world.h"
-
 #include <optional>
+
+#include "world.h"
 
 void next_event(std::optional<Event> &event);
 

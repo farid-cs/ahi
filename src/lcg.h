@@ -19,6 +19,8 @@
 #ifndef AHI_LCG_H
 #define AHI_LCG_H
 
+#include <cstddef>
+
 struct LCG {
 	constexpr LCG() = default;
 	constexpr void init(this LCG &self, std::size_t s) {
