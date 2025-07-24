@@ -35,7 +35,6 @@ constexpr auto FPS {120};
 
 constexpr auto dt {1.0 / 5.0};
 
-static Controller con {};
 static Event ev {};
 static double lastUpdateTime {};
 static World world {};
@@ -54,7 +53,7 @@ void run(void)
 {
 	while (!WindowShouldClose() && !world.win) {
 		draw_world(world);
-		ev = con.next_event();
+		next_event(ev);
 		if (GetTime()-lastUpdateTime > dt) {
 			world.update(ev);
 			lastUpdateTime = GetTime();

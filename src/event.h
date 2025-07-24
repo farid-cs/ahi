@@ -21,10 +21,6 @@
 
 #include "world.h"
 
-struct Controller {
-	Event event{};
-	constexpr Controller() = default;
-	Event next_event(this Controller &self);
-};
+void next_event(Event &event);
 
 #endif
