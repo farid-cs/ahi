@@ -16,16 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <chrono>
 #include <cstdlib>
 #include <cstring>
-#include <print>
 #include <iostream>
+#include <print>
 
 #include "raylib.h"
 
+#include "config.h"
 #include "draw.h"
 #include "event.h"
-#include "config.h"
+
+auto now = std::chrono::high_resolution_clock::now;
 
 constexpr auto WindowTitle {"ahi " VERSION};
 constexpr auto WindowWidth {GridWidth};
@@ -33,10 +36,10 @@ constexpr auto WindowHeight {GridHeight + FontSize};
 
 constexpr auto FPS {120};
 
-constexpr auto dt {1.0 / 5.0};
+constexpr std::chrono::milliseconds dt {200};
 
 static std::optional<Event> ev {};
-static double lastUpdateTime {};
+static auto lastUpdateTime {now()};
 static World world {};
 
 void setup(void)
@@ -46,7 +49,7 @@ void setup(void)
 	SetTargetFPS(FPS);
 
 	world.init();
-	lastUpdateTime = GetTime();
+	lastUpdateTime = now();
 }
 
 void run(void)
@@ -54,12 +57,12 @@ void run(void)
 	while (!WindowShouldClose() && !world.win) {
 		draw_world(world);
 		next_event(ev);
-		if (GetTime()-lastUpdateTime > dt) {
+		if (now()-lastUpdateTime > dt) {
 			if (ev.has_value())
 				world.handle(ev.value());
 			if (world.update())
 				ev = {};
-			lastUpdateTime = GetTime();
+			lastUpdateTime = now();
 		}
 	}
 }
