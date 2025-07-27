@@ -1,4 +1,4 @@
-project('raylib', 'c', version: '5.5', default_options: ['c_std=c99', 'warning_level=0'])
+project('raylib', 'c', version: '5.5', default_options: ['c_std=c99', 'warning_level=0', 'default_library=static'])
 
 wl = import('unstable-wayland')
 
@@ -20,7 +20,7 @@ protocols = wl.scan_xml(
   'src/external/glfw/deps/wayland/xdg-shell.xml',
 )
 
-raylib = static_library('raylib',
+raylib = library('raylib',
   'src/raudio.c',
   'src/rcore.c',
   'src/rglfw.c',

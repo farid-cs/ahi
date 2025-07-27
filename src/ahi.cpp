@@ -28,7 +28,7 @@
 #include "draw.h"
 #include "event.h"
 
-auto now = std::chrono::high_resolution_clock::now;
+constexpr auto now {std::chrono::high_resolution_clock::now};
 
 constexpr auto WindowTitle {"ahi " VERSION};
 constexpr auto WindowWidth {GridWidth};
@@ -48,7 +48,6 @@ void setup(void)
 
 	SetTargetFPS(FPS);
 
-	world.init();
 	lastUpdateTime = now();
 }
 
@@ -60,8 +59,8 @@ void run(void)
 		if (now()-lastUpdateTime > dt) {
 			if (ev.has_value())
 				world.handle(ev.value());
-			if (world.update())
-				ev = {};
+			ev = {};
+			world.update();
 			lastUpdateTime = now();
 		}
 	}

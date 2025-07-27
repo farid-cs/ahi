@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <cstddef>
 #include <random>
 #include <ranges>
@@ -40,10 +41,9 @@ constexpr Position DefaultPosition {ColumnCount / 2, RowCount / 2};
 constexpr auto SEED {1uz};
 
 struct Snake {
-	std::array<Position, ColumnCount*RowCount> body{};
-	std::size_t length{};
+	std::array<Position, ColumnCount*RowCount> body{DefaultPosition};
+	std::size_t length{1};
 	constexpr Snake() = default;
-	constexpr void init(this Snake &self);
 	constexpr int move(this Snake &self, const Direction direction);
 };
 
@@ -55,20 +55,22 @@ enum class Event {
 };
 
 struct World {
+	LCG<std::max(ColumnCount, RowCount)> lcg{SEED};
 	Snake snake{};
 	Position food{};
-	Direction direction{};
-	LCG lcg{};
+	Direction direction{DefaultDirection};
 	std::size_t score{};
 	bool win{};
-	constexpr World() = default;
-	constexpr void init(this World &self);
+	constexpr World();
+	constexpr World& operator=(World&&) = default;
 	constexpr void handle(this World &self, const Event ev);
-	constexpr bool update(this World &self);
+	constexpr void update(this World &self);
 };
 
-constexpr Position spawn_food(Snake &snake, LCG &lcg)
+constexpr Position spawn_food(Snake &snake, LCG<std::max(ColumnCount, RowCount)> &lcg)
 {
+	assert(snake.length <= ColumnCount * RowCount);
+
 	for (;;) {
 		Position random_pos {
 			lcg()%ColumnCount,
@@ -81,10 +83,11 @@ constexpr Position spawn_food(Snake &snake, LCG &lcg)
 	}
 }
 
-constexpr void Snake::init(this Snake &self)
+constexpr World::World()
 {
-	self.body[0] = DefaultPosition;
-	self.length = 1;
+	World &self {*this};
+
+	self.food = spawn_food(self.snake, self.lcg);
 }
 
 constexpr int Snake::move(this Snake &self, const Direction direction)
@@ -104,16 +107,6 @@ constexpr int Snake::move(this Snake &self, const Direction direction)
 	}
 
 	return 0;
-}
-
-constexpr void World::init(this World &self)
-{
-	self.snake.init();
-	self.direction = DefaultDirection;
-	self.lcg.init(SEED);
-	self.food = spawn_food(self.snake, self.lcg);
-	self.score = 0;
-	self.win = false;
 }
 
 constexpr void World::handle(this World &self, const Event ev)
@@ -140,27 +133,25 @@ constexpr void World::handle(this World &self, const Event ev)
 	}
 }
 
-constexpr bool World::update(this World &self)
+constexpr void World::update(this World &self)
 {
-	const auto lastSegment {self.snake.body[self.snake.length-1]};
+	const auto last_segment {self.snake.body[self.snake.length-1]};
 
 	if (self.snake.move(self.direction) < 0) {
-		self.init();
-		return true;
+		self = World{};
+		return;
 	}
 
 	if (self.snake.body[0] == self.food) {
-		self.snake.body[self.snake.length] = lastSegment;
+		self.snake.body[self.snake.length] = last_segment;
 		self.snake.length += 1;
 		if (self.snake.length == ColumnCount*RowCount) {
 			self.win = true;
-			return false;
+			return;
 		}
 		self.score += 1;
 		self.food = spawn_food(self.snake, self.lcg);
 	}
-
-	return false;
 }
 
 #endif

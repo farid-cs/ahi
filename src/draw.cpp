@@ -32,43 +32,43 @@ constexpr auto ColorScore      {BLACK};
 
 static void draw_food(const Position &food)
 {
-	auto X {food.x*(Factor+LineWidth)+Factor/2};
-	auto Y {food.y*(Factor+LineWidth)+Factor/2};
+	auto x {food.x*(Factor+LineWidth)+Factor/2};
+	auto y {food.y*(Factor+LineWidth)+Factor/2};
 
-	DrawCircle(X, Y, Factor/2, ColorFood);
+	DrawCircle(x, y, Factor/2, ColorFood);
 }
 
 static void draw_grid()
 {
-	int X{}, Y{};
+	int x{}, y{};
 
 	for (auto line : vs::iota(0uz, ColumnCount)) {
-		X = line*(Factor+LineWidth)+Factor;
-		Y = 0;
-		DrawRectangle(X, Y, LineWidth, GridHeight, ColorLine);
+		x = line*(Factor+LineWidth)+Factor;
+		y = 0;
+		DrawRectangle(x, y, LineWidth, GridHeight, ColorLine);
 	}
 
 	for (auto line : vs::iota(0uz, RowCount)) {
-		X = 0;
-		Y = line*(Factor+LineWidth)+Factor;
-		DrawRectangle(X, Y, GridWidth, LineWidth, ColorLine);
+		x = 0;
+		y = line*(Factor+LineWidth)+Factor;
+		DrawRectangle(x, y, GridWidth, LineWidth, ColorLine);
 	}
 }
 
 static void draw_snake(const Snake &snake)
 {
 	const auto &head = snake.body.front();
-	int X{}, Y{};
+	int x{}, y{};
 
 	for (const auto &segment : snake.body | vs::take(snake.length) | vs::drop(1)) {
-		X = segment.x*(Factor+LineWidth);
-		Y = segment.y*(Factor+LineWidth);
-		DrawRectangle(X, Y, Factor, Factor, ColorTail);
+		x = segment.x*(Factor+LineWidth);
+		y = segment.y*(Factor+LineWidth);
+		DrawRectangle(x, y, Factor, Factor, ColorTail);
 	}
 
-	X = head.x*(Factor+LineWidth);
-	Y = head.y*(Factor+LineWidth);
-	DrawRectangle(X, Y, Factor, Factor, ColorHead);
+	x = head.x*(Factor+LineWidth);
+	y = head.y*(Factor+LineWidth);
+	DrawRectangle(x, y, Factor, Factor, ColorHead);
 }
 
 static void draw_score(int score)

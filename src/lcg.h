@@ -21,15 +21,12 @@
 
 #include <cstddef>
 
+template <size_t mod>
 struct LCG {
-	constexpr LCG() = default;
-	constexpr void init(this LCG &self, std::size_t s)
-	{
-		self.seed = s;
-	}
+	constexpr LCG(std::size_t s) : seed{s} {};
 	constexpr size_t operator()(this LCG &self)
 	{
-		self.seed = self.seed * 7 + 3;
+		self.seed = (self.seed * 7 + 3) % mod;
 		return self.seed;
 	}
 private:
