@@ -61,7 +61,7 @@ void Renderer::draw_grid(this Renderer &self)
 
 	assert(self.set_color(ColorGrid));
 
-	for (auto line : vs::iota(ColumnCount*0, ColumnCount-1)) {
+	for (auto line : vs::iota(std::uint64_t{}, ColumnCount-std::uint64_t{1})) {
 		rect.x = line*(Factor+LineWidth)+Factor;
 		rect.y = 0.0f;
 		rect.w = LineWidth;
@@ -69,7 +69,7 @@ void Renderer::draw_grid(this Renderer &self)
 		assert(SDL_RenderFillRect(self.ren, &rect));
 	}
 
-	for (auto line : vs::iota(RowCount*0, RowCount)) {
+	for (auto line : vs::iota(std::uint64_t{}, RowCount)) {
 		rect.x = 0.0f;
 		rect.y = line*(Factor+LineWidth)+Factor;
 		rect.w = GridWidth;
