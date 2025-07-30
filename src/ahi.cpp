@@ -21,8 +21,10 @@
 #include <cstring>
 #include <iostream>
 #include <print>
+#include <thread>
 
-#include "raylib.h"
+#include "SDL3/SDL.h"
+#include "SDL3_ttf/SDL_ttf.h"
 
 #include "config.h"
 #include "draw.h"
@@ -32,49 +34,64 @@ constexpr auto now {std::chrono::high_resolution_clock::now};
 
 constexpr auto WindowTitle {"ahi " VERSION};
 constexpr auto WindowWidth {GridWidth};
-constexpr auto WindowHeight {GridHeight + FontSize};
+constexpr auto WindowHeight {GridHeight + Factor};
 
-constexpr auto FPS {120};
+constexpr std::chrono::milliseconds MIN_STATE_DURATION{200};
+constexpr std::chrono::milliseconds MIN_FRAME_DURATION{1};
 
-constexpr std::chrono::milliseconds dt {200};
-
-static std::optional<Event> ev {};
+static std::queue<Event> ev{};
 static auto lastUpdateTime {now()};
+static auto frameUpdateTime {now()};
 static World world {};
 
-void setup(void)
+static SDL_Window *window{};
+static Renderer renderer{};
+
+static void setup(void)
 {
-	InitWindow(WindowWidth, WindowHeight, WindowTitle);
-
-	SetTargetFPS(FPS);
-
+	assert(SDL_Init(0));
+	assert(TTF_Init());
+	window = SDL_CreateWindow(WindowTitle, WindowWidth, WindowHeight, 0);
+	assert(window);
+	renderer.ren = SDL_CreateRenderer(window, nullptr);
+	assert(renderer.ren);
+	renderer.font = TTF_OpenFont("res/font.ttf", 32.f);
+	assert(renderer.font);
 	lastUpdateTime = now();
 }
 
-void run(void)
+static void run(void)
 {
-	while (!WindowShouldClose() && !world.win) {
-		draw_world(world);
-		next_event(ev);
-		if (now()-lastUpdateTime > dt) {
-			if (ev.has_value())
-				world.handle(ev.value());
-			ev = {};
+	while (next_event(ev)) {
+		renderer.draw(world);
+		frameUpdateTime = now();
+		if (now() - lastUpdateTime > MIN_STATE_DURATION) {
+			if (!ev.empty()) {
+				if (ev.size() > 100uz)
+					for (auto i{0uz}; i != ev.size()-100uz; i++)
+						ev.pop();
+				world.handle(ev.front());
+				ev.pop();
+			}
 			world.update();
 			lastUpdateTime = now();
 		}
+		std::this_thread::sleep_until(frameUpdateTime+MIN_FRAME_DURATION);
 	}
 }
 
-void cleanup(void)
+static void cleanup(void)
 {
-	CloseWindow();
+	SDL_DestroyRenderer(renderer.ren);
+	SDL_DestroyWindow(window);
+	TTF_Quit();
+	SDL_Quit();
 }
 
 int main(int argc, char *argv[])
 {
 	if (argc > 1) {
-		if (std::strcmp(argv[1], "-v")) {
+		if (!std::strcmp(argv[0], "-v")) {
 			std::println(std::cerr, "{} [-v]", argv[0]);
 			return EXIT_FAILURE;
 		}

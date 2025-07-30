@@ -22,23 +22,29 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <cstddef>
-#include <random>
+#include <cstdint>
 #include <ranges>
 
-#include "lcg.h"
 #include "vec2.h"
 
 namespace rs = std::ranges;
 namespace vs = std::views;
-using Position = Vec2<std::size_t>;
 using Direction = Vec2<int>;
 
-constexpr auto ColumnCount {16uz};
-constexpr auto RowCount {10uz};
-constexpr Direction DefaultDirection {+1, 0};
-constexpr Position DefaultPosition {ColumnCount / 2, RowCount / 2};
-constexpr auto SEED {1uz};
+constexpr std::uint64_t ColumnCount{16};
+constexpr std::uint64_t RowCount{10};
+
+struct Position : Vec2<std::uint64_t> {
+	constexpr Position() : Vec2{} {}
+	constexpr Position(std::uint64_t x, std::uint64_t y) : Vec2{x, y}
+	{
+		assert(this->x < ColumnCount);
+		assert(this->y < RowCount);
+	}
+};
+
+constexpr Direction DefaultDirection{+1, 0};
+constexpr Position DefaultPosition{ColumnCount / 2, RowCount / 2};
 
 struct Snake {
 	std::array<Position, ColumnCount*RowCount> body{DefaultPosition};
@@ -55,39 +61,38 @@ enum class Event {
 };
 
 struct World {
-	LCG<std::max(ColumnCount, RowCount)> lcg{SEED};
 	Snake snake{};
 	Position food{};
 	Direction direction{DefaultDirection};
-	std::size_t score{};
+	std::uint64_t score{};
 	bool win{};
 	constexpr World();
-	constexpr World& operator=(World&&) = default;
+	constexpr World& operator=(const World&) = default;
 	constexpr void handle(this World &self, const Event ev);
 	constexpr void update(this World &self);
 };
 
-constexpr Position spawn_food(Snake &snake, LCG<std::max(ColumnCount, RowCount)> &lcg)
+constexpr Position spawn_food(Snake &snake)
 {
-	assert(snake.length <= ColumnCount * RowCount);
+	uint64_t x{}, y{};
 
-	for (;;) {
-		Position random_pos {
-			lcg()%ColumnCount,
-			lcg()%RowCount,
-		};
+	for (x = 0; x != ColumnCount; x++) {
+		for (y = 0; y != RowCount; y++) {
+			Position pos{x, y};
 
-		if (!rs::contains(snake.body | vs::take(snake.length), random_pos)) {
-			return random_pos;
+			if (!rs::contains(snake.body | vs::take(snake.length), pos)) {
+				return pos;
+			}
 		}
 	}
+	std::unreachable();
 }
 
 constexpr World::World()
 {
 	World &self {*this};
 
-	self.food = spawn_food(self.snake, self.lcg);
+	self.food = spawn_food(self.snake);
 }
 
 constexpr int Snake::move(this Snake &self, const Direction direction)
@@ -150,7 +155,7 @@ constexpr void World::update(this World &self)
 			return;
 		}
 		self.score += 1;
-		self.food = spawn_food(self.snake, self.lcg);
+		self.food = spawn_food(self.snake);
 	}
 }
 

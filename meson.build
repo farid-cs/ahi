@@ -11,7 +11,8 @@ configure_file(
   configuration: conf
 )
 
-raylib_dep = subproject('raylib').get_variable('raylib_dep')
+sdl3_dep = subproject('sdl3', default_options: ['default_library=static', 'warning_level=0']).get_variable('sdl3_dep')
+sdl3_ttf_dep = subproject('sdl3_ttf', default_options: ['default_library=static', 'warning_level=0']).get_variable('sdl3_ttf_dep')
 
 source = files(
   'src/ahi.cpp',
@@ -23,5 +24,5 @@ executable(
   'ahi',
   source,
   cpp_args: '-std=c++23',
-  dependencies: raylib_dep
+  dependencies: [sdl3_dep, sdl3_ttf_dep]
 )

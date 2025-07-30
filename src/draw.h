@@ -19,16 +19,32 @@
 #ifndef AHI_DRAW_H
 #define AHI_DRAW_H
 
+#include <cstddef>
+
+#include "SDL3/SDL.h"
+
 #include "world.h"
 
-constexpr auto Factor {100};
+constexpr auto Factor {90};
 
 constexpr auto LineWidth {1};
 constexpr auto GridWidth {ColumnCount*Factor + (ColumnCount-1)*LineWidth};
-constexpr auto GridHeight {RowCount*Factor + (RowCount-1)*LineWidth};
+constexpr auto GridHeight {RowCount*Factor + RowCount*LineWidth};
 
 constexpr auto FontSize {Factor * 0.75};
 
-void draw_world(const World &w);
+struct Renderer {
+	TTF_Font *font{};
+	SDL_Renderer *ren{};
+	constexpr Renderer() = default;
+	void draw(this Renderer &, const World &);
+private:
+	bool draw_cell(this Renderer &, Position);
+	void draw_food(this Renderer &, Position);
+	void draw_grid(this Renderer &);
+	void draw_score(this Renderer &, std::uint64_t);
+	void draw_snake(this Renderer &, const Snake &);
+	bool set_color(this Renderer &, SDL_Color);
+};
 
 #endif

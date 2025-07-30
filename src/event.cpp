@@ -16,24 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "raylib.h"
+#include "SDL3/SDL.h"
 
 #include "event.h"
 
-void next_event(std::optional<Event> &event)
+bool next_event(std::queue<Event> &event)
 {
-	switch (GetKeyPressed()) {
-	case KEY_UP:
-		event = Event::Up;
-		break;
-	case KEY_DOWN:
-		event = Event::Down;
-		break;
-	case KEY_LEFT:
-		event = Event::Left;
-		break;
-	case KEY_RIGHT:
-		event = Event::Right;
-		break;
+	SDL_Event e{};
+
+	while (SDL_PollEvent(&e)) {
+		if (e.type == SDL_EVENT_QUIT) {
+			return false;
+		}
+		if (e.type == SDL_EVENT_KEY_DOWN) {
+			switch (e.key.key) {
+				case SDLK_UP:
+					event.push(Event::Up);
+					break;
+				case SDLK_DOWN:
+					event.push(Event::Down);
+					break;
+				case SDLK_LEFT:
+					event.push(Event::Left);
+					break;
+				case SDLK_RIGHT:
+					event.push(Event::Right);
+					break;
+			}
+		}
 	}
+	return true;
 }

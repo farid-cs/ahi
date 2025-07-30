@@ -16,79 +16,107 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <cassert>
 #include <format>
 #include <ranges>
 
-#include "raylib.h"
+#include "SDL3/SDL.h"
+#include "SDL3_ttf/SDL_ttf.h"
 
 #include "draw.h"
 
-constexpr auto ColorBackground {GRAY};
-constexpr auto ColorHead       {GREEN};
-constexpr auto ColorTail       {YELLOW};
-constexpr auto ColorFood       {BLUE};
-constexpr auto ColorLine       {BLACK};
-constexpr auto ColorScore      {BLACK};
+constexpr SDL_Color ColorBackground{0xBE, 0xBE, 0xBE, 0xFF};
+constexpr SDL_Color ColorBody{0xFF, 0xFF, 0, 0xFF};
+constexpr SDL_Color ColorHead{0, 0xFF, 0, 0xFF};
+constexpr SDL_Color ColorGrid{0, 0, 0, 0xFF};
+constexpr SDL_Color ColorFood{0, 0, 0xFF, 0xFF};
+constexpr SDL_Color ColorScore{0, 0, 0, 0xFF};
 
-static void draw_food(const Position &food)
+bool Renderer::set_color(this Renderer &self, SDL_Color c)
 {
-	auto x {food.x*(Factor+LineWidth)+Factor/2};
-	auto y {food.y*(Factor+LineWidth)+Factor/2};
-
-	DrawCircle(x, y, Factor/2, ColorFood);
+	return SDL_SetRenderDrawColor(self.ren, c.r, c.g, c.b, c.a);
 }
 
-static void draw_grid()
+bool Renderer::draw_cell(this Renderer &self, Position pos)
 {
-	int x{}, y{};
+	SDL_FRect rect{
+		.x = float(pos.x*(Factor+LineWidth)),
+		.y = float(pos.y*(Factor+LineWidth)),
+		.w = Factor,
+		.h = Factor,
+	};
 
-	for (auto line : vs::iota(0uz, ColumnCount)) {
-		x = line*(Factor+LineWidth)+Factor;
-		y = 0;
-		DrawRectangle(x, y, LineWidth, GridHeight, ColorLine);
+	return SDL_RenderFillRect(self.ren, &rect);
+}
+
+void Renderer::draw_food(this Renderer &self, Position food)
+{
+	assert(self.set_color(ColorFood));
+	assert(self.draw_cell(food));
+}
+
+void Renderer::draw_grid(this Renderer &self)
+{
+	SDL_FRect rect{};
+
+	assert(self.set_color(ColorGrid));
+
+	for (auto line : vs::iota(ColumnCount*0, ColumnCount-1)) {
+		rect.x = line*(Factor+LineWidth)+Factor;
+		rect.y = 0.0f;
+		rect.w = LineWidth;
+		rect.h = GridHeight;
+		assert(SDL_RenderFillRect(self.ren, &rect));
 	}
 
-	for (auto line : vs::iota(0uz, RowCount)) {
-		x = 0;
-		y = line*(Factor+LineWidth)+Factor;
-		DrawRectangle(x, y, GridWidth, LineWidth, ColorLine);
+	for (auto line : vs::iota(RowCount*0, RowCount)) {
+		rect.x = 0.0f;
+		rect.y = line*(Factor+LineWidth)+Factor;
+		rect.w = GridWidth;
+		rect.h = LineWidth;
+		assert(SDL_RenderFillRect(self.ren, &rect));
 	}
 }
 
-static void draw_snake(const Snake &snake)
+void Renderer::draw_snake(this Renderer &self, const Snake &snake)
 {
-	const auto &head = snake.body.front();
-	int x{}, y{};
+	auto head {snake.body.front()};
 
-	for (const auto &segment : snake.body | vs::take(snake.length) | vs::drop(1)) {
-		x = segment.x*(Factor+LineWidth);
-		y = segment.y*(Factor+LineWidth);
-		DrawRectangle(x, y, Factor, Factor, ColorTail);
-	}
+	assert(self.set_color(ColorBody));
+	for (auto segment : snake.body | vs::take(snake.length) | vs::drop(1))
+		assert(self.draw_cell(segment));
 
-	x = head.x*(Factor+LineWidth);
-	y = head.y*(Factor+LineWidth);
-	DrawRectangle(x, y, Factor, Factor, ColorHead);
+	assert(self.set_color(ColorHead));
+	assert(self.draw_cell(head));
 }
 
-static void draw_score(int score)
+void Renderer::draw_score(this Renderer &self, std::uint64_t score)
 {
-	DrawText(std::format("{}", score).c_str(), 0, GridHeight, FontSize, ColorScore);
+	SDL_FRect rect{ .x = 0.0f, .y = (Factor+LineWidth)*RowCount, .w = Factor*2, .h = Factor };
+	SDL_Surface *surf{};
+	SDL_Texture *texture{};
+
+	surf = TTF_RenderText_Solid(self.font, std::format("{:03}", score).c_str(), 0, ColorScore);
+	assert(surf);
+	texture = SDL_CreateTextureFromSurface(self.ren, surf);
+	assert(texture);
+	assert(SDL_RenderTexture(self.ren, texture, NULL, &rect));
+	SDL_DestroyTexture(texture);
+	SDL_DestroySurface(surf);
 }
 
-void draw_world(const World &w)
+void Renderer::draw(this Renderer &self, const World &w)
 {
-	BeginDrawing();
+	assert(self.set_color(ColorBackground));
+	assert(SDL_RenderClear(self.ren));
 
-	ClearBackground(ColorBackground);
+	self.draw_grid();
 
-	draw_grid();
+	self.draw_snake(w.snake);
 
-	draw_snake(w.snake);
+	self.draw_food(w.food);
 
-	draw_food(w.food);
+	self.draw_score(w.score);
 
-	draw_score(w.score);
-
-	EndDrawing();
+	assert(SDL_RenderPresent(self.ren));
 }

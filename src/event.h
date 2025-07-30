@@ -20,9 +20,10 @@
 #define AHI_EVENT_H
 
 #include <optional>
+#include <queue>
 
 #include "world.h"
 
-void next_event(std::optional<Event> &event);
+bool next_event(std::queue<Event> &event);
 
 #endif

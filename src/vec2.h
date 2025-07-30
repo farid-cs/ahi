@@ -25,7 +25,7 @@ struct Vec2 {
 	T y{};
 	constexpr Vec2() = default;
 	constexpr Vec2(T x, T y) : x{x}, y{y} {};
-	constexpr bool operator== (const Vec2<T> &other) const = default;
+	constexpr bool operator==(const Vec2<T> &other) const = default;
 };
 
 #endif
