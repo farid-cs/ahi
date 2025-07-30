@@ -30,14 +30,16 @@
 #include "draw.h"
 #include "event.h"
 
+using Milliseconds = std::chrono::milliseconds;
+
 constexpr auto now {std::chrono::high_resolution_clock::now};
 
 constexpr auto WindowTitle {"ahi " VERSION};
 constexpr auto WindowWidth {GridWidth};
 constexpr auto WindowHeight {GridHeight + Factor};
 
-constexpr std::chrono::milliseconds MIN_STATE_DURATION{200};
-constexpr std::chrono::milliseconds MIN_FRAME_DURATION{1};
+constexpr Milliseconds MIN_STATE_DURATION{200};
+constexpr Milliseconds MIN_FRAME_DURATION{1};
 
 static std::queue<Event> ev{};
 static auto lastUpdateTime {now()};
