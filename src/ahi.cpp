@@ -64,7 +64,7 @@ static void setup(void)
 
 static void run(void)
 {
-	while (next_event(ev)) {
+	while (next_event(ev) && !world.win) {
 		renderer.draw(world);
 		frameUpdateTime = now();
 		if (now() - lastUpdateTime > MIN_STATE_DURATION) {
