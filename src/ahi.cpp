@@ -23,9 +23,7 @@
 #include <print>
 #include <thread>
 
-#include "SDL3/SDL.h"
-#include "SDL3_ttf/SDL_ttf.h"
-
+#include "sdl.h"
 #include "config.h"
 #include "draw.h"
 #include "event.h"
@@ -36,7 +34,7 @@ constexpr auto now {std::chrono::high_resolution_clock::now};
 
 constexpr auto WindowTitle {"ahi " VERSION};
 constexpr auto WindowWidth {GridWidth};
-constexpr auto WindowHeight {GridHeight + Factor};
+constexpr auto WindowHeight {GridHeight + ScoreHeight};
 
 constexpr Milliseconds MIN_STATE_DURATION{200};
 constexpr Milliseconds MIN_FRAME_DURATION{1};
@@ -46,8 +44,9 @@ static auto lastUpdateTime {now()};
 static auto frameUpdateTime {now()};
 static World world {};
 
-static SDL_Window *window{};
-static Renderer renderer{};
+SDL_Window *window{};
+SDL_Renderer *renderer{};
+TTF_Font *font{};
 
 static void setup(void)
 {
@@ -55,23 +54,22 @@ static void setup(void)
 	assert(TTF_Init());
 	window = SDL_CreateWindow(WindowTitle, WindowWidth, WindowHeight, 0);
 	assert(window);
-	renderer.ren = SDL_CreateRenderer(window, nullptr);
-	assert(renderer.ren);
-	renderer.font = TTF_OpenFont("res/font.ttf", 32.f);
-	assert(renderer.font);
+	renderer = SDL_CreateRenderer(window, nullptr);
+	assert(renderer);
+	font = TTF_OpenFont("res/font.ttf", 32.f);
+	assert(font);
 	lastUpdateTime = now();
 }
 
 static void run(void)
 {
 	while (next_event(ev) && !world.win) {
-		renderer.draw(world);
+		draw(world);
 		frameUpdateTime = now();
 		if (now() - lastUpdateTime > MIN_STATE_DURATION) {
 			if (!ev.empty()) {
 				if (ev.size() > 100uz)
-					for (auto i{0uz}; i != ev.size()-100uz; i++)
-						ev.pop();
+					ev.pop();
 				world.handle(ev.front());
 				ev.pop();
 			}
@@ -84,7 +82,8 @@ static void run(void)
 
 static void cleanup(void)
 {
-	SDL_DestroyRenderer(renderer.ren);
+	TTF_CloseFont(font);
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	TTF_Quit();
 	SDL_Quit();

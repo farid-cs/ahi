@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AHI_EVENT_H
-#define AHI_EVENT_H
+#ifndef SDL_SHARED_H
+#define SDL_SHARED_H
 
-#include <queue>
+#include "SDL3/SDL.h"
+#include "SDL3_ttf/SDL_ttf.h"
 
-#include "world.h"
-
-bool next_event(std::queue<Event> &event);
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern TTF_Font *font;
 
 #endif

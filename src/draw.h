@@ -30,21 +30,9 @@ constexpr auto Factor {90};
 constexpr auto LineWidth {1};
 constexpr auto GridWidth {ColumnCount*Factor + (ColumnCount-1)*LineWidth};
 constexpr auto GridHeight {RowCount*Factor + RowCount*LineWidth};
+constexpr auto ScoreHeight {Factor};
+constexpr auto ScoreWidth {Factor*2};
 
-constexpr auto FontSize {Factor * 0.75};
-
-struct Renderer {
-	TTF_Font *font{};
-	SDL_Renderer *ren{};
-	constexpr Renderer() = default;
-	void draw(this Renderer &, const World &);
-private:
-	bool draw_cell(this Renderer &, Position);
-	void draw_food(this Renderer &, Position);
-	void draw_grid(this Renderer &);
-	void draw_score(this Renderer &, std::uint64_t);
-	void draw_snake(this Renderer &, const Snake &);
-	bool set_color(this Renderer &, SDL_Color);
-};
+void draw(const World &);
 
 #endif

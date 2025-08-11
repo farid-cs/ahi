@@ -20,24 +20,62 @@
 #include <format>
 #include <ranges>
 
-#include "SDL3/SDL.h"
-#include "SDL3_ttf/SDL_ttf.h"
+#include "sdl.h"
 
 #include "draw.h"
 
-constexpr SDL_Color ColorBackground{0xBE, 0xBE, 0xBE, 0xFF};
-constexpr SDL_Color ColorBody{0xFF, 0xFF, 0, 0xFF};
-constexpr SDL_Color ColorHead{0, 0xFF, 0, 0xFF};
-constexpr SDL_Color ColorGrid{0, 0, 0, 0xFF};
-constexpr SDL_Color ColorFood{0, 0, 0xFF, 0xFF};
-constexpr SDL_Color ColorScore{0, 0, 0, 0xFF};
+struct Color {
+	std::uint8_t r{};
+	std::uint8_t g{};
+	std::uint8_t b{};
+	std::uint8_t a{};
+	constexpr Color(const char *s)
+	{
+		constexpr auto hex = [](char ch)
+		{
+			return ch > 'A' ? ch-'A'+10 : ch-'0';
+		};
 
-bool Renderer::set_color(this Renderer &self, SDL_Color c)
+		assert(s[0] == '#');
+		assert(s[1] >= '0' && s[1] <= 'F');
+		assert(s[2] >= '0' && s[2] <= 'F');
+		assert(s[3] >= '0' && s[3] <= 'F');
+		assert(s[4] >= '0' && s[4] <= 'F');
+		assert(s[5] >= '0' && s[5] <= 'F');
+		assert(s[6] >= '0' && s[6] <= 'F');
+		assert(s[7] >= '0' && s[7] <= 'F');
+		assert(s[8] >= '0' && s[8] <= 'F');
+		assert(!s[9]);
+
+		this->r = hex(s[1])*16 + hex(s[2]);
+		this->g = hex(s[3])*16 + hex(s[4]);
+		this->b = hex(s[5])*16 + hex(s[6]);
+		this->a = hex(s[7])*16 + hex(s[8]);
+	}
+	constexpr SDL_Color sdl_color(this const Color &self)
+	{
+		return SDL_Color{
+			.r = self.r,
+			.g = self.g,
+			.b = self.b,
+			.a = self.a,
+		};
+	}
+};
+
+constexpr Color ColorBackground = "#BEBEBEFF";
+constexpr Color ColorBody = "#FFFF00FF";
+constexpr Color ColorHead = "#00FF00FF";
+constexpr Color ColorGrid = "#000000FF";
+constexpr Color ColorFood = "#0000FFFF";
+constexpr Color ColorScore = "#000000FF";
+
+bool set_color(Color c)
 {
-	return SDL_SetRenderDrawColor(self.ren, c.r, c.g, c.b, c.a);
+	return SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 }
 
-bool Renderer::draw_cell(this Renderer &self, Position pos)
+bool draw_cell(Position pos)
 {
 	SDL_FRect rect{
 		.x = float(pos.x*(Factor+LineWidth)),
@@ -46,27 +84,27 @@ bool Renderer::draw_cell(this Renderer &self, Position pos)
 		.h = Factor,
 	};
 
-	return SDL_RenderFillRect(self.ren, &rect);
+	return SDL_RenderFillRect(renderer, &rect);
 }
 
-void Renderer::draw_food(this Renderer &self, Position food)
+void draw_food(Position food)
 {
-	assert(self.set_color(ColorFood));
-	assert(self.draw_cell(food));
+	assert(set_color(ColorFood));
+	assert(draw_cell(food));
 }
 
-void Renderer::draw_grid(this Renderer &self)
+void draw_grid()
 {
 	SDL_FRect rect{};
 
-	assert(self.set_color(ColorGrid));
+	assert(set_color(ColorGrid));
 
 	for (auto line : vs::iota(std::uint64_t{}, ColumnCount-std::uint64_t{1})) {
 		rect.x = line*(Factor+LineWidth)+Factor;
 		rect.y = 0.0f;
 		rect.w = LineWidth;
 		rect.h = GridHeight;
-		assert(SDL_RenderFillRect(self.ren, &rect));
+		assert(SDL_RenderFillRect(renderer, &rect));
 	}
 
 	for (auto line : vs::iota(std::uint64_t{}, RowCount)) {
@@ -74,49 +112,54 @@ void Renderer::draw_grid(this Renderer &self)
 		rect.y = line*(Factor+LineWidth)+Factor;
 		rect.w = GridWidth;
 		rect.h = LineWidth;
-		assert(SDL_RenderFillRect(self.ren, &rect));
+		assert(SDL_RenderFillRect(renderer, &rect));
 	}
 }
 
-void Renderer::draw_snake(this Renderer &self, const Snake &snake)
+void draw_snake(const Snake &snake)
 {
 	auto head {snake.body.front()};
 
-	assert(self.set_color(ColorBody));
+	assert(set_color(ColorBody));
 	for (auto segment : snake.body | vs::take(snake.length) | vs::drop(1))
-		assert(self.draw_cell(segment));
+		assert(draw_cell(segment));
 
-	assert(self.set_color(ColorHead));
-	assert(self.draw_cell(head));
+	assert(set_color(ColorHead));
+	assert(draw_cell(head));
 }
 
-void Renderer::draw_score(this Renderer &self, std::uint64_t score)
+void draw_score(std::uint64_t score)
 {
-	SDL_FRect rect{ .x = 0.0f, .y = (Factor+LineWidth)*RowCount, .w = Factor*2, .h = Factor };
-	SDL_Surface *surf{};
+	SDL_FRect rect{
+		.x = 0.0f,
+		.y = (Factor+LineWidth)*RowCount,
+		.w = ScoreWidth,
+		.h = ScoreHeight,
+	};
+	SDL_Surface *surface{};
 	SDL_Texture *texture{};
 
-	surf = TTF_RenderText_Solid(self.font, std::format("{:03}", score).c_str(), 0, ColorScore);
-	assert(surf);
-	texture = SDL_CreateTextureFromSurface(self.ren, surf);
+	surface = TTF_RenderText_Solid(font, std::format("{:03}", score).c_str(), 0, ColorScore.sdl_color());
+	assert(surface);
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	assert(texture);
-	assert(SDL_RenderTexture(self.ren, texture, NULL, &rect));
+	assert(SDL_RenderTexture(renderer, texture, NULL, &rect));
 	SDL_DestroyTexture(texture);
-	SDL_DestroySurface(surf);
+	SDL_DestroySurface(surface);
 }
 
-void Renderer::draw(this Renderer &self, const World &w)
+void draw(const World &w)
 {
-	assert(self.set_color(ColorBackground));
-	assert(SDL_RenderClear(self.ren));
+	assert(set_color(ColorBackground));
+	assert(SDL_RenderClear(renderer));
 
-	self.draw_grid();
+	draw_grid();
 
-	self.draw_snake(w.snake);
+	draw_snake(w.snake);
 
-	self.draw_food(w.food);
+	draw_food(w.food);
 
-	self.draw_score(w.score);
+	draw_score(w.score);
 
-	assert(SDL_RenderPresent(self.ren));
+	assert(SDL_RenderPresent(renderer));
 }
