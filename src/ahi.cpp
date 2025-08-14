@@ -28,6 +28,7 @@
 #include "draw.h"
 #include "event.h"
 
+using TimePoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
 using Milliseconds = std::chrono::milliseconds;
 
 constexpr auto now {std::chrono::high_resolution_clock::now};
@@ -39,9 +40,9 @@ constexpr auto WindowHeight {GridHeight + ScoreHeight};
 constexpr Milliseconds MIN_STATE_DURATION{200};
 constexpr Milliseconds MIN_FRAME_DURATION{1};
 
-static std::queue<Event> ev{};
-static auto lastUpdateTime {now()};
-static auto frameUpdateTime {now()};
+static EventListener el{};
+static TimePoint lastUpdateTime{};
+static TimePoint frameUpdateTime {};
 static World world {};
 
 SDL_Window *window{};
@@ -63,16 +64,11 @@ static void setup(void)
 
 static void run(void)
 {
-	while (next_event(ev) && !world.win) {
+	while (el.listen() && !world.win) {
 		draw(world);
 		frameUpdateTime = now();
 		if (now() - lastUpdateTime > MIN_STATE_DURATION) {
-			if (!ev.empty()) {
-				if (ev.size() > 100uz)
-					ev.pop();
-				world.handle(ev.front());
-				ev.pop();
-			}
+			el.handle(world);
 			world.update();
 			lastUpdateTime = now();
 		}

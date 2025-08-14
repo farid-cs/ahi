@@ -20,7 +20,7 @@
 
 #include "event.h"
 
-bool next_event(std::queue<Event> &event)
+bool EventListener::listen(this EventListener &self)
 {
 	SDL_Event e{};
 
@@ -30,20 +30,32 @@ bool next_event(std::queue<Event> &event)
 		}
 		if (e.type == SDL_EVENT_KEY_DOWN) {
 			switch (e.key.key) {
-				case SDLK_UP:
-					event.push(Event::Up);
-					break;
-				case SDLK_DOWN:
-					event.push(Event::Down);
-					break;
-				case SDLK_LEFT:
-					event.push(Event::Left);
-					break;
-				case SDLK_RIGHT:
-					event.push(Event::Right);
-					break;
+			case SDLK_UP:
+				self.events.push(Event::Up);
+				break;
+			case SDLK_DOWN:
+				self.events.push(Event::Down);
+				break;
+			case SDLK_LEFT:
+				self.events.push(Event::Left);
+				break;
+			case SDLK_RIGHT:
+				self.events.push(Event::Right);
+				break;
+			default: 
+				continue;
 			}
+			if (self.events.size() > 100uz)
+				self.events.pop();
 		}
 	}
 	return true;
+}
+
+void EventListener::handle(this EventListener &self, World &w)
+{
+	if (self.events.empty())
+		return;
+	w.handle(self.events.front());
+	self.events.pop();
 }

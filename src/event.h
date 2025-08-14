@@ -23,6 +23,12 @@
 
 #include "world.h"
 
-bool next_event(std::queue<Event> &event);
+class EventListener {
+	std::queue<Event> events{};
+public:
+	EventListener() = default;
+	bool listen(this EventListener &);
+	void handle(this EventListener &, World &);
+};
 
 #endif
