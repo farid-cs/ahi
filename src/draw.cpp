@@ -99,7 +99,7 @@ void draw_grid()
 
 	assert(set_color(ColorGrid));
 
-	for (auto line : vs::iota(std::uint64_t{}, ColumnCount-std::uint64_t{1})) {
+	for (auto line : vs::iota(uint64_t{}, ColumnCount-uint64_t{1})) {
 		rect.x = line*(Factor+LineWidth)+Factor;
 		rect.y = 0.0f;
 		rect.w = LineWidth;
@@ -107,7 +107,7 @@ void draw_grid()
 		assert(SDL_RenderFillRect(renderer, &rect));
 	}
 
-	for (auto line : vs::iota(std::uint64_t{}, RowCount)) {
+	for (auto line : vs::iota(uint64_t{}, RowCount)) {
 		rect.x = 0.0f;
 		rect.y = line*(Factor+LineWidth)+Factor;
 		rect.w = GridWidth;
@@ -128,7 +128,7 @@ void draw_snake(const Snake &snake)
 	assert(draw_cell(head));
 }
 
-void draw_score(std::uint64_t score)
+void draw_score(uint64_t score)
 {
 	SDL_FRect rect{
 		.x = 0.0f,

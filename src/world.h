@@ -22,36 +22,13 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <cstdint>
 #include <ranges>
 
 #include "vec2.h"
+#include "config.h"
 
 namespace rs = std::ranges;
 namespace vs = std::views;
-using Direction = Vec2<int>;
-
-constexpr std::uint64_t ColumnCount{16};
-constexpr std::uint64_t RowCount{10};
-
-struct Position : Vec2<std::uint64_t> {
-	constexpr Position() : Vec2{} {}
-	constexpr Position(std::uint64_t x, std::uint64_t y) : Vec2{x, y}
-	{
-		assert(this->x < ColumnCount);
-		assert(this->y < RowCount);
-	}
-};
-
-constexpr Direction DefaultDirection{+1, 0};
-constexpr Position DefaultPosition{ColumnCount / 2, RowCount / 2};
-
-struct Snake {
-	std::array<Position, ColumnCount*RowCount> body{DefaultPosition};
-	std::size_t length{1};
-	constexpr Snake() = default;
-	constexpr int move(this Snake &self, const Direction direction);
-};
 
 enum class Event {
 	Up,
@@ -60,11 +37,18 @@ enum class Event {
 	Left
 };
 
+struct Snake {
+	std::array<Position, ColumnCount*RowCount> body{};
+	size_t length{};
+	constexpr Snake();
+	constexpr int move(this Snake &self, const Direction direction);
+};
+
 struct World {
 	Snake snake{};
 	Position food{};
-	Direction direction{DefaultDirection};
-	std::uint64_t score{};
+	Direction direction{};
+	uint64_t score{};
 	bool win{};
 	constexpr World();
 	constexpr World& operator=(const World&) = default;
@@ -72,27 +56,24 @@ struct World {
 	constexpr void update(this World &self);
 };
 
-constexpr Position spawn_food(Snake &snake)
+constexpr Position spawn_food(Snake &snake);
+
+constexpr Snake::Snake()
 {
-	uint64_t x{}, y{};
+	constexpr Position DefaultHeadPosition{ColumnCount / 2, RowCount / 2};
+	Snake &self {*this};
 
-	for (x = 0; x != ColumnCount; x++) {
-		for (y = 0; y != RowCount; y++) {
-			Position pos{x, y};
-
-			if (!rs::contains(snake.body | vs::take(snake.length), pos)) {
-				return pos;
-			}
-		}
-	}
-	std::unreachable();
+	self.body[0] = DefaultHeadPosition;
+	self.length = 1;
 }
 
 constexpr World::World()
 {
+	constexpr Direction DefaultHeadDirection{+1, 0};
 	World &self {*this};
 
 	self.food = spawn_food(self.snake);
+	self.direction = DefaultHeadDirection;
 }
 
 constexpr int Snake::move(this Snake &self, const Direction direction)
@@ -157,6 +138,22 @@ constexpr void World::update(this World &self)
 		self.score += 1;
 		self.food = spawn_food(self.snake);
 	}
+}
+
+constexpr Position spawn_food(Snake &snake)
+{
+	uint64_t x{}, y{};
+
+	for (x = 0; x != ColumnCount; x++) {
+		for (y = 0; y != RowCount; y++) {
+			Position pos{x, y};
+
+			if (!rs::contains(snake.body | vs::take(snake.length), pos)) {
+				return pos;
+			}
+		}
+	}
+	std::unreachable();
 }
 
 #endif

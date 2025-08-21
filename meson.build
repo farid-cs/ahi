@@ -7,7 +7,7 @@ version = meson.project_version()
 conf = configuration_data()
 conf.set('VERSION', '"@0@"'.format(version))
 configure_file(
-  output: 'config.h',
+  output: 'version.h',
   configuration: conf
 )
 

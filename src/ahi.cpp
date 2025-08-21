@@ -24,7 +24,7 @@
 #include <thread>
 
 #include "sdl.h"
-#include "config.h"
+#include "version.h"
 #include "draw.h"
 #include "event.h"
 

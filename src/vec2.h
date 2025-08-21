@@ -19,6 +19,8 @@
 #ifndef AHI_VEC2_H
 #define AHI_VEC2_H
 
+#include <cstdint>
+
 template <typename T>
 struct Vec2 {
 	T x{};
@@ -27,5 +29,8 @@ struct Vec2 {
 	constexpr Vec2(T x_, T y_) : x{x_}, y{y_} {};
 	constexpr bool operator==(const Vec2<T> &other) const = default;
 };
+
+using Direction = Vec2<int>;
+using Position = Vec2<uint64_t>;
 
 #endif
