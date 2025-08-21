@@ -30,6 +30,7 @@
 
 using TimePoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
 using Milliseconds = std::chrono::milliseconds;
+using std::this_thread::sleep_until;
 
 constexpr auto now {std::chrono::high_resolution_clock::now};
 
@@ -42,8 +43,8 @@ constexpr Milliseconds MIN_FRAME_DURATION{1};
 
 static EventListener el{};
 static TimePoint lastUpdateTime{};
-static TimePoint frameUpdateTime {};
-static World world {};
+static TimePoint frameUpdateTime{};
+static World world{};
 
 SDL_Window *window{};
 SDL_Renderer *renderer{};
@@ -72,7 +73,7 @@ static void run(void)
 			world.update();
 			lastUpdateTime = now();
 		}
-		std::this_thread::sleep_until(frameUpdateTime+MIN_FRAME_DURATION);
+		sleep_until(frameUpdateTime+MIN_FRAME_DURATION);
 	}
 }
 
@@ -88,7 +89,7 @@ static void cleanup(void)
 int main(int argc, char *argv[])
 {
 	if (argc > 1) {
-		if (!std::strcmp(argv[0], "-v")) {
+		if (std::strcmp(argv[1], "-v")) {
 			std::println(std::cerr, "{} [-v]", argv[0]);
 			return EXIT_FAILURE;
 		}
