@@ -20,8 +20,6 @@
 #include <format>
 #include <ranges>
 
-#include "sdl.h"
-
 #include "draw.h"
 
 struct Color {
@@ -70,12 +68,26 @@ constexpr Color ColorGrid = "#000000FF";
 constexpr Color ColorFood = "#0000FFFF";
 constexpr Color ColorScore = "#000000FF";
 
-bool set_color(Color c)
+void DrawingContext::init(SDL_Window *window)
 {
-	return SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+	this->renderer = SDL_CreateRenderer(window, nullptr);
+	assert(this->renderer);
+	this->font = TTF_OpenFont("res/font.ttf", 32.f);
+	assert(this->font);
 }
 
-bool draw_cell(Position pos)
+void DrawingContext::deinit(this DrawingContext &self)
+{
+	TTF_CloseFont(self.font);
+	SDL_DestroyRenderer(self.renderer);
+}
+
+static bool set_color(DrawingContext &dc, Color c)
+{
+	return SDL_SetRenderDrawColor(dc.renderer, c.r, c.g, c.b, c.a);
+}
+
+static bool draw_cell(DrawingContext &dc, Position pos)
 {
 	SDL_FRect rect{
 		.x = float(pos.x*(Factor+LineWidth)),
@@ -84,27 +96,27 @@ bool draw_cell(Position pos)
 		.h = Factor,
 	};
 
-	return SDL_RenderFillRect(renderer, &rect);
+	return SDL_RenderFillRect(dc.renderer, &rect);
 }
 
-void draw_food(Position food)
+static void draw_food(DrawingContext &dc, Position food)
 {
-	assert(set_color(ColorFood));
-	assert(draw_cell(food));
+	assert(set_color(dc, ColorFood));
+	assert(draw_cell(dc, food));
 }
 
-void draw_grid()
+static void draw_grid(DrawingContext &dc)
 {
 	SDL_FRect rect{};
 
-	assert(set_color(ColorGrid));
+	assert(set_color(dc, ColorGrid));
 
 	for (auto line : vs::iota(uint64_t{}, ColumnCount-uint64_t{1})) {
 		rect.x = line*(Factor+LineWidth)+Factor;
 		rect.y = 0.0f;
 		rect.w = LineWidth;
 		rect.h = GridHeight;
-		assert(SDL_RenderFillRect(renderer, &rect));
+		assert(SDL_RenderFillRect(dc.renderer, &rect));
 	}
 
 	for (auto line : vs::iota(uint64_t{}, RowCount)) {
@@ -112,23 +124,23 @@ void draw_grid()
 		rect.y = line*(Factor+LineWidth)+Factor;
 		rect.w = GridWidth;
 		rect.h = LineWidth;
-		assert(SDL_RenderFillRect(renderer, &rect));
+		assert(SDL_RenderFillRect(dc.renderer, &rect));
 	}
 }
 
-void draw_snake(const Snake &snake)
+static void draw_snake(DrawingContext &dc, const Snake &snake)
 {
 	auto head {snake.body.front()};
 
-	assert(set_color(ColorBody));
+	assert(set_color(dc, ColorBody));
 	for (auto segment : snake.body | vs::take(snake.length) | vs::drop(1))
-		assert(draw_cell(segment));
+		assert(draw_cell(dc, segment));
 
-	assert(set_color(ColorHead));
-	assert(draw_cell(head));
+	assert(set_color(dc, ColorHead));
+	assert(draw_cell(dc, head));
 }
 
-void draw_score(uint64_t score)
+static void draw_score(DrawingContext &dc, uint64_t score)
 {
 	SDL_FRect rect{
 		.x = 0.0f,
@@ -139,27 +151,27 @@ void draw_score(uint64_t score)
 	SDL_Surface *surface{};
 	SDL_Texture *texture{};
 
-	surface = TTF_RenderText_Solid(font, std::format("{:03}", score).c_str(), 0, ColorScore.sdl_color());
+	surface = TTF_RenderText_Solid(dc.font, std::format("{:03}", score).c_str(), 0, ColorScore.sdl_color());
 	assert(surface);
-	texture = SDL_CreateTextureFromSurface(renderer, surface);
+	texture = SDL_CreateTextureFromSurface(dc.renderer, surface);
 	assert(texture);
-	assert(SDL_RenderTexture(renderer, texture, NULL, &rect));
+	assert(SDL_RenderTexture(dc.renderer, texture, NULL, &rect));
 	SDL_DestroyTexture(texture);
 	SDL_DestroySurface(surface);
 }
 
-void draw(const World &w)
+void draw(DrawingContext &dc, const World &w)
 {
-	assert(set_color(ColorBackground));
-	assert(SDL_RenderClear(renderer));
+	assert(set_color(dc, ColorBackground));
+	assert(SDL_RenderClear(dc.renderer));
 
-	draw_grid();
+	draw_grid(dc);
 
-	draw_snake(w.snake);
+	draw_snake(dc, w.snake);
 
-	draw_food(w.food);
+	draw_food(dc, w.food);
 
-	draw_score(w.score);
+	draw_score(dc, w.score);
 
-	assert(SDL_RenderPresent(renderer));
+	assert(SDL_RenderPresent(dc.renderer));
 }

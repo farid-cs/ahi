@@ -23,7 +23,6 @@
 #include <print>
 #include <thread>
 
-#include "sdl.h"
 #include "version.h"
 #include "draw.h"
 #include "event.h"
@@ -47,8 +46,7 @@ static TimePoint frameUpdateTime{};
 static World world{};
 
 SDL_Window *window{};
-SDL_Renderer *renderer{};
-TTF_Font *font{};
+DrawingContext dc{};
 
 static void setup(void)
 {
@@ -56,17 +54,14 @@ static void setup(void)
 	assert(TTF_Init());
 	window = SDL_CreateWindow(WindowTitle, WindowWidth, WindowHeight, 0);
 	assert(window);
-	renderer = SDL_CreateRenderer(window, nullptr);
-	assert(renderer);
-	font = TTF_OpenFont("res/font.ttf", 32.f);
-	assert(font);
+	dc.init(window);
 	lastUpdateTime = now();
 }
 
 static void run(void)
 {
 	while (el.listen() && !world.win) {
-		draw(world);
+		draw(dc, world);
 		frameUpdateTime = now();
 		if (now() - lastUpdateTime > MIN_STATE_DURATION) {
 			el.handle(world);
@@ -79,8 +74,7 @@ static void run(void)
 
 static void cleanup(void)
 {
-	TTF_CloseFont(font);
-	SDL_DestroyRenderer(renderer);
+	dc.deinit();
 	SDL_DestroyWindow(window);
 	TTF_Quit();
 	SDL_Quit();

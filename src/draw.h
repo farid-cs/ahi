@@ -22,6 +22,7 @@
 #include <cstddef>
 
 #include "SDL3/SDL.h"
+#include "SDL3_ttf/SDL_ttf.h"
 
 #include "world.h"
 
@@ -33,6 +34,14 @@ constexpr auto GridHeight {RowCount*Factor + RowCount*LineWidth};
 constexpr auto ScoreHeight {Factor};
 constexpr auto ScoreWidth {Factor*2};
 
-void draw(const World &);
+struct DrawingContext {
+	SDL_Renderer *renderer{};
+	TTF_Font *font{};
+	DrawingContext() {};
+	void init(SDL_Window *);
+	void deinit(this DrawingContext &);
+};
+
+void draw(DrawingContext &, const World &);
 
 #endif
