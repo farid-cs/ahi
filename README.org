@@ -1,8 +1,7 @@
 * Ahi
-ahi is a simple snake game implemented in C++.
+ahi is a simple snake game implemented in Rust.
 ahi is powered by [[https://wiki.libsdl.org/SDL3/FrontPage][SDL3]].
 ** Screenshot
 [[./screenshot.png]]
 ** License
 ahi is licensed under GPL.
-This project includes the Martian Mono font, licensed under the SIL Open Font License (OFL).
