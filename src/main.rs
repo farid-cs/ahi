@@ -9,7 +9,7 @@ use draw::*;
 use event::*;
 use world::World;
 
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+const WINDOW_TITLE: &'static str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
 const WINDOW_WIDTH: u64 = GRID_WIDTH;
 const WINDOW_HEIGHT: u64 = GRID_HEIGHT;
 const MIN_STATE_DURATION: Duration = Duration::from_millis(200);
@@ -23,7 +23,7 @@ fn main() -> ExitCode {
             eprintln!("{} [-v]", args[0]);
             return ExitCode::FAILURE;
         }
-        println!("ahi {}", VERSION);
+        println!("{}", WINDOW_TITLE);
         return ExitCode::SUCCESS;
     }
 
@@ -31,7 +31,7 @@ fn main() -> ExitCode {
     let sdl = sdl3::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window(format!("ahi {}", VERSION).as_str(), WINDOW_WIDTH as u32, WINDOW_HEIGHT as u32)
+        .window(WINDOW_TITLE, WINDOW_WIDTH as u32, WINDOW_HEIGHT as u32)
         .position_centered()
         .build()
         .unwrap();
