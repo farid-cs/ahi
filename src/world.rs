@@ -1,3 +1,5 @@
+use std::cmp;
+
 pub const COLUMN_COUNT: u64 = 16;
 pub const ROW_COUNT: u64 = 10;
 
@@ -48,30 +50,25 @@ impl Snake {
     fn step(&mut self, direction: Direction) -> bool {
         let range = 0..self.body.len()-1;
         self.body.copy_within(range, 1);
+        let mut head = self.body[0];
 
         if direction.x < 0 {
-            if self.body[0].x == 0 {
-                self.body[0].x = COLUMN_COUNT;
-            }
-            self.body[0].x -= -direction.x as u64;
+            head.x = head.x.wrapping_sub(1);
+            head.x = cmp::min(head.x, COLUMN_COUNT-1);
         } else {
-            self.body[0].x += direction.x as u64;
+            head.x += direction.x as u64;
+            head.x %= COLUMN_COUNT;
         }
-        self.body[0].x += COLUMN_COUNT;
-        self.body[0].x %= COLUMN_COUNT;
-
         if direction.y < 0 {
-            if self.body[0].y == 0 {
-                self.body[0].y = ROW_COUNT;
-            }
-            self.body[0].y -= -direction.y as u64;
+            head.y = head.y.wrapping_sub(1);
+            head.y = cmp::min(head.y, ROW_COUNT-1);
         } else {
-            self.body[0].y += direction.y as u64;
+            head.y += direction.y as u64;
+            head.y %= ROW_COUNT;
         }
-        self.body[0].y += ROW_COUNT;
-        self.body[0].y %= ROW_COUNT;
+        self.body[0] = head;
 
-        if (&self.body[1..]).contains(&self.body[0]) {
+        if (&self.body[1..]).contains(&head) {
             return false;
         }
 
