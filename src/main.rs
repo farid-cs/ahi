@@ -16,7 +16,6 @@ const MIN_STATE_DURATION: Duration = Duration::from_millis(200);
 
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
-    let mut world = World::new();
 
     if args.len() > 1 {
         if args[1] != "-v" {
@@ -36,8 +35,8 @@ fn main() -> ExitCode {
         .build()
         .unwrap();
     let mut pen = Pen::new(window);
-    let event_pump = sdl.event_pump().unwrap();
-    let mut el = EventListener::new(event_pump);
+    let mut el = EventListener::new(&sdl);
+    let mut world = World::new();
     let mut last_update_time = Instant::now();
 
     /* run */

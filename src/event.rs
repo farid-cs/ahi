@@ -1,4 +1,4 @@
-use sdl3::EventPump;
+use sdl3::{Sdl, EventPump};
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
 use std::collections::VecDeque;
@@ -11,9 +11,9 @@ pub struct EventListener {
 }
 
 impl EventListener {
-    pub fn new(event_pump: EventPump) -> Self {
+    pub fn new(sdl: &Sdl) -> Self {
         Self {
-            event_pump,
+            event_pump: sdl.event_pump().unwrap(),
             events: VecDeque::new(),
         }
     }
