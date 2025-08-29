@@ -2,13 +2,14 @@ use sdl3::pixels::Color;
 use sdl3::rect::Rect;
 use sdl3::render::{Canvas, FRect};
 use sdl3::video::Window;
+
 use crate::world::{COLUMN_COUNT, Position, ROW_COUNT, Snake, World};
 
 const FACTOR: u64 = 90;
 
 const LINE_WIDTH: u64 = 1;
-pub const GRID_WIDTH: u64 = COLUMN_COUNT as u64 * FACTOR + (COLUMN_COUNT as u64 - 1) * LINE_WIDTH;
-pub const GRID_HEIGHT: u64 = ROW_COUNT as u64 * FACTOR + ROW_COUNT as u64 * LINE_WIDTH;
+pub const GRID_WIDTH: u64 = COLUMN_COUNT * FACTOR + (COLUMN_COUNT - 1) * LINE_WIDTH;
+pub const GRID_HEIGHT: u64 = ROW_COUNT * FACTOR + ROW_COUNT * LINE_WIDTH;
 
 const COLOR_BACKGROUND: Color = Color::RGBA(0xBE, 0xBE, 0xBE, 0xFF);
 const COLOR_GRID: Color = Color::RGBA(0x00, 0x00, 0x00, 0xFF);

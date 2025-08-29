@@ -9,7 +9,7 @@ pub struct Vec2<T> {
     pub y: T,
 }
 pub type Position = Vec2<u64>;
-pub type Direction = Vec2<i64>;
+type Direction = Vec2<i64>;
 
 pub enum WorldEvent {
     Up,
@@ -19,7 +19,7 @@ pub enum WorldEvent {
 }
 
 pub struct Snake {
-    pub body: Vec<Position>
+    pub body: Vec<Position>,
 }
 
 pub struct World {
@@ -45,34 +45,39 @@ fn spawn_food(snake: &Snake) -> Position {
 
 impl Snake {
     fn new() -> Self {
-        Self { body: vec![Position{ x: COLUMN_COUNT/2, y: ROW_COUNT/2 }] }
+        Self {
+            body: vec![Position {
+                x: COLUMN_COUNT / 2,
+                y: ROW_COUNT / 2,
+            }],
+        }
     }
     fn step(&mut self, direction: Direction) -> bool {
-        let range = 0..self.body.len()-1;
+        let range = 0..self.body.len() - 1;
         self.body.copy_within(range, 1);
         let mut head = self.body[0];
 
         if direction.x < 0 {
             head.x = head.x.wrapping_sub(1);
-            head.x = cmp::min(head.x, COLUMN_COUNT-1);
+            head.x = cmp::min(head.x, COLUMN_COUNT - 1);
         } else {
             head.x += direction.x as u64;
             head.x %= COLUMN_COUNT;
         }
         if direction.y < 0 {
             head.y = head.y.wrapping_sub(1);
-            head.y = cmp::min(head.y, ROW_COUNT-1);
+            head.y = cmp::min(head.y, ROW_COUNT - 1);
         } else {
             head.y += direction.y as u64;
             head.y %= ROW_COUNT;
         }
         self.body[0] = head;
 
-        if (&self.body[1..]).contains(&head) {
+        if self.body[1..].contains(&head) {
             return false;
         }
 
-        return true;
+        true
     }
 }
 
@@ -102,7 +107,7 @@ impl World {
         }
     }
     pub fn update(&mut self) {
-        let last_segment = self.snake.body[self.snake.body.len()-1];
+        let last_segment = self.snake.body[self.snake.body.len() - 1];
 
         if !self.snake.step(self.direction) {
             *self = World::new();

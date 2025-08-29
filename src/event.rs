@@ -1,6 +1,6 @@
-use sdl3::{Sdl, EventPump};
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
+use sdl3::{EventPump, Sdl};
 use std::collections::VecDeque;
 
 use crate::world::{World, WorldEvent};
