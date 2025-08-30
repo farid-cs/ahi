@@ -1,1 +1,3 @@
-Display the score.
+- Display the score.
+    - try rendering fonts with [fontdue](https://docs.rs/fontdue/latest/fontdue/).
+- Check whether `WorldEvent` is needed or it is better to use `Direction` directly.
