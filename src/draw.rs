@@ -1,6 +1,6 @@
 use sdl3::pixels::Color;
 use sdl3::rect::Rect;
-use sdl3::render::{Canvas, FRect};
+use sdl3::render::Canvas;
 use sdl3::video::Window;
 
 use crate::world::{COLUMN_COUNT, Position, ROW_COUNT, Snake, World};
@@ -37,7 +37,7 @@ impl Pen {
             rect.set_y(0);
             rect.set_width(LINE_WIDTH as u32);
             rect.set_height(GRID_HEIGHT as u32);
-            self.canvas.fill_rect(Some(FRect::from(rect))).unwrap();
+            self.canvas.fill_rect(rect).unwrap();
         }
 
         for line in 0..ROW_COUNT {
@@ -45,7 +45,7 @@ impl Pen {
             rect.set_y((line * (FACTOR + LINE_WIDTH) + FACTOR) as i32);
             rect.set_width(GRID_WIDTH as u32);
             rect.set_height(LINE_WIDTH as u32);
-            self.canvas.fill_rect(Some(FRect::from(rect))).unwrap();
+            self.canvas.fill_rect(rect).unwrap();
         }
     }
     fn draw_cell(&mut self, pos: Position) {
@@ -56,7 +56,7 @@ impl Pen {
             FACTOR as u32,
         );
 
-        self.canvas.fill_rect(Some(FRect::from(rect))).unwrap();
+        self.canvas.fill_rect(rect).unwrap();
     }
     fn draw_snake(&mut self, snake: &Snake) {
         let head = snake.body[0];
