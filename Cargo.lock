@@ -11,27 +11,34 @@ dependencies = [
 
 [[package]]
 name = "bitflags"
-version = "2.9.3"
+version = "2.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34efbcccd345379ca2868b2b2c9d3782e9cc58ba87bc7d79d5b53d9c9ae6f25d"
+checksum = "812e12b5285cc515a9c72a5c1d3b6d46a19dac5acfef5265968c166106e31dd3"
 
 [[package]]
 name = "cc"
-version = "1.2.34"
+version = "1.2.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42bc4aea80032b7bf409b0bc7ccad88853858911b7713a8062fdc0623867bedc"
+checksum = "9f50d563227a1c37cc0a263f64eca3334388c01c5e4c4861a9def205c614383c"
 dependencies = [
+ "find-msvc-tools",
  "shlex",
 ]
 
 [[package]]
 name = "cmake"
-version = "0.1.54"
+version = "0.1.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7caa3f9de89ddbe2c607f4101924c5abec803763ae9534e4f4d7d8f84aa81f0"
+checksum = "75443c44cd6b379beb8c5b45d85d0773baf31cce901fe7bb252f4eff3008ef7d"
 dependencies = [
  "cc",
 ]
+
+[[package]]
+name = "find-msvc-tools"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a3076410a55c90011c298b04d0cfa770b00fa04e1e3c97d3f6c9de105a03844"
 
 [[package]]
 name = "lazy_static"
@@ -41,9 +48,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libc"
-version = "0.2.175"
+version = "0.2.178"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a82ae493e598baaea5209805c49bbf2ea7de956d50d7da0da1164f9c6d28543"
+checksum = "37c93d8daa9d8a012fd8ab92f088405fb202ea0b6ab73ee2482ae66af4f42091"
 
 [[package]]
 name = "rpkg-config"
@@ -53,9 +60,9 @@ checksum = "5a2d2f3481209a6b42eec2fbb49063fb4e8d35b57023401495d4fe0f85c817f0"
 
 [[package]]
 name = "sdl3"
-version = "0.14.41"
+version = "0.16.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a99b2afb918ecbbda07d4b742bc4b52ea3985a0b24740593d5a3109211c63db"
+checksum = "40ad6a0142275b5a39c20051c071ab6719068d3ecb345cc96f78b9818e73e44a"
 dependencies = [
  "bitflags",
  "lazy_static",
@@ -85,16 +92,17 @@ dependencies = [
 
 [[package]]
 name = "sdl3-src"
-version = "3.2.20"
+version = "3.2.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bcf3cbc4d49f7ab594e9f5915fd7a051a327544077a8f1df83411f063df4be08"
+checksum = "c77e0ceda907b4b335bc34191538ba538b30bd30a90daedc575f6e347c4605c2"
 
 [[package]]
 name = "sdl3-sys"
-version = "0.5.4+SDL3-3.2.20"
+version = "0.5.11+SDL3-3.2.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c4f7f348dea346f67f38bc1392bf1edd9250d4c586479778e849f6ee61af2d8"
+checksum = "73979b5f78819ede7fb6b7534161fe70f3d7a56cc09e7e29c7b58c2b525abfa6"
 dependencies = [
+ "cc",
  "cmake",
  "rpkg-config",
  "sdl3-src",
