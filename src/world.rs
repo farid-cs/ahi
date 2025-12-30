@@ -1,15 +1,15 @@
 use std::cmp;
 
-pub const COLUMN_COUNT: u64 = 16;
-pub const ROW_COUNT: u64 = 10;
+pub const COLUMN_COUNT: u32 = 16;
+pub const ROW_COUNT: u32 = 10;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vec2<T> {
     pub x: T,
     pub y: T,
 }
-pub type Position = Vec2<u64>;
-type Direction = Vec2<i64>;
+pub type Position = Vec2<u32>;
+type Direction = Vec2<i8>;
 
 pub enum WorldEvent {
     Up,
@@ -61,14 +61,14 @@ impl Snake {
             head.x = head.x.wrapping_sub(1);
             head.x = cmp::min(head.x, COLUMN_COUNT - 1);
         } else {
-            head.x += direction.x as u64;
+            head.x += direction.x as u32;
             head.x %= COLUMN_COUNT;
         }
         if direction.y < 0 {
             head.y = head.y.wrapping_sub(1);
             head.y = cmp::min(head.y, ROW_COUNT - 1);
         } else {
-            head.y += direction.y as u64;
+            head.y += direction.y as u32;
             head.y %= ROW_COUNT;
         }
         self.body[0] = head;

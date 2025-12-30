@@ -5,11 +5,11 @@ use sdl3::video::Window;
 
 use crate::world::{COLUMN_COUNT, Position, ROW_COUNT, Snake, World};
 
-const FACTOR: u64 = 90;
+const FACTOR: u32 = 90;
 
-const LINE_WIDTH: u64 = 1;
-pub const GRID_WIDTH: u64 = COLUMN_COUNT * FACTOR + (COLUMN_COUNT - 1) * LINE_WIDTH;
-pub const GRID_HEIGHT: u64 = ROW_COUNT * FACTOR + ROW_COUNT * LINE_WIDTH;
+const LINE_WIDTH: u32 = 1;
+pub const GRID_WIDTH: u32 = COLUMN_COUNT * FACTOR + (COLUMN_COUNT - 1) * LINE_WIDTH;
+pub const GRID_HEIGHT: u32 = ROW_COUNT * FACTOR + ROW_COUNT * LINE_WIDTH;
 
 const COLOR_BACKGROUND: Color = Color::RGBA(0xBE, 0xBE, 0xBE, 0xFF);
 const COLOR_GRID: Color = Color::RGBA(0x00, 0x00, 0x00, 0xFF);
@@ -35,16 +35,16 @@ impl Pen {
         for line in 0..COLUMN_COUNT - 1 {
             rect.set_x((line * (FACTOR + LINE_WIDTH) + (FACTOR)) as i32);
             rect.set_y(0);
-            rect.set_width(LINE_WIDTH as u32);
-            rect.set_height(GRID_HEIGHT as u32);
+            rect.set_width(LINE_WIDTH);
+            rect.set_height(GRID_HEIGHT);
             self.canvas.fill_rect(rect).unwrap();
         }
 
         for line in 0..ROW_COUNT {
             rect.set_x(0);
             rect.set_y((line * (FACTOR + LINE_WIDTH) + FACTOR) as i32);
-            rect.set_width(GRID_WIDTH as u32);
-            rect.set_height(LINE_WIDTH as u32);
+            rect.set_width(GRID_WIDTH);
+            rect.set_height(LINE_WIDTH);
             self.canvas.fill_rect(rect).unwrap();
         }
     }
@@ -52,8 +52,8 @@ impl Pen {
         let rect = Rect::new(
             (pos.x * (FACTOR + LINE_WIDTH)) as i32,
             (pos.y * (FACTOR + LINE_WIDTH)) as i32,
-            FACTOR as u32,
-            FACTOR as u32,
+            FACTOR,
+            FACTOR,
         );
 
         self.canvas.fill_rect(rect).unwrap();

@@ -10,8 +10,8 @@ use event::*;
 use world::World;
 
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
-const WINDOW_WIDTH: u32 = GRID_WIDTH as u32;
-const WINDOW_HEIGHT: u32 = GRID_HEIGHT as u32;
+const WINDOW_WIDTH: u32 = GRID_WIDTH;
+const WINDOW_HEIGHT: u32 = GRID_HEIGHT;
 const MIN_STATE_DURATION: Duration = Duration::from_millis(200);
 
 fn main() -> ExitCode {
