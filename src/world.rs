@@ -2,14 +2,22 @@ use std::cmp;
 
 pub const COLUMN_COUNT: u32 = 16;
 pub const ROW_COUNT: u32 = 10;
+const INITIAL_POSITION: Position = Position {
+    x: COLUMN_COUNT / 2,
+    y: ROW_COUNT / 2,
+};
 
 #[derive(Copy, Clone, PartialEq, Debug)]
-pub struct Vec2<T> {
-    pub x: T,
-    pub y: T,
+pub struct Position {
+    pub x: u32,
+    pub y: u32,
 }
-pub type Position = Vec2<u32>;
-type Direction = Vec2<i8>;
+
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Direction {
+    pub x: i8,
+    pub y: i8,
+}
 
 pub enum WorldEvent {
     Up,
@@ -30,6 +38,13 @@ pub struct World {
     pub win: bool,
 }
 
+impl Direction {
+    const UP: Self = Self { x: 0, y: -1 };
+    const RIGHT: Self = Self { x: 1, y: 0 };
+    const DOWN: Self = Self { x: 0, y: 1 };
+    const LEFT: Self = Self { x: -1, y: 0 };
+}
+
 fn spawn_food(snake: &Snake) -> Position {
     for x in 0..COLUMN_COUNT {
         for y in 0..ROW_COUNT {
@@ -46,10 +61,7 @@ fn spawn_food(snake: &Snake) -> Position {
 impl Snake {
     fn new() -> Self {
         Self {
-            body: vec![Position {
-                x: COLUMN_COUNT / 2,
-                y: ROW_COUNT / 2,
-            }],
+            body: vec![INITIAL_POSITION],
         }
     }
     fn step(&mut self, direction: Direction) -> bool {
@@ -89,17 +101,17 @@ impl World {
         World {
             snake,
             food,
-            direction: Direction { x: 1, y: 0 },
+            direction: Direction::RIGHT,
             score: 0,
             win: false,
         }
     }
     pub fn handle(&mut self, ev: &WorldEvent) {
         let direction = match ev {
-            WorldEvent::Up => Direction { x: 0, y: -1 },
-            WorldEvent::Down => Direction { x: 0, y: 1 },
-            WorldEvent::Left => Direction { x: -1, y: 0 },
-            WorldEvent::Right => Direction { x: 1, y: 0 },
+            WorldEvent::Up => Direction::UP,
+            WorldEvent::Down => Direction::DOWN,
+            WorldEvent::Left => Direction::LEFT,
+            WorldEvent::Right => Direction::RIGHT,
         };
 
         if direction.x * self.direction.x + direction.y * self.direction.y == 0 {
