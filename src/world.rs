@@ -75,14 +75,14 @@ impl Snake {
             head.x = head.x.wrapping_sub(1);
             head.x = cmp::min(head.x, COLUMN_COUNT - 1);
         } else {
-            head.x += direction.x as u32;
+            head.x += u32::try_from(direction.x).unwrap();
             head.x %= COLUMN_COUNT;
         }
         if direction.y < 0 {
             head.y = head.y.wrapping_sub(1);
             head.y = cmp::min(head.y, ROW_COUNT - 1);
         } else {
-            head.y += direction.y as u32;
+            head.y += u32::try_from(direction.y).unwrap();
             head.y %= ROW_COUNT;
         }
         self.body[0] = head;
@@ -130,7 +130,7 @@ impl World {
 
         if self.snake.body[0] == self.food {
             self.snake.body.push(last_segment);
-            if self.snake.body.len() == (COLUMN_COUNT * ROW_COUNT) as usize {
+            if self.snake.body.len() == usize::try_from(COLUMN_COUNT * ROW_COUNT).unwrap() {
                 self.win = true;
                 return;
             }

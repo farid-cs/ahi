@@ -32,7 +32,7 @@ impl Pen {
         self.canvas.set_draw_color(COLOR_GRID);
 
         for line in 0..COLUMN_COUNT - 1 {
-            rect.set_x((line * (CELL_WIDTH + LINE_WIDTH) + (CELL_WIDTH)) as i32);
+            rect.set_x(i32::try_from(line * (CELL_WIDTH + LINE_WIDTH) + (CELL_WIDTH)).unwrap());
             rect.set_y(0);
             rect.set_width(LINE_WIDTH);
             rect.set_height(GRID_HEIGHT);
@@ -41,7 +41,7 @@ impl Pen {
 
         for line in 0..ROW_COUNT {
             rect.set_x(0);
-            rect.set_y((line * (CELL_WIDTH + LINE_WIDTH) + CELL_WIDTH) as i32);
+            rect.set_y(i32::try_from(line * (CELL_WIDTH + LINE_WIDTH) + CELL_WIDTH).unwrap());
             rect.set_width(GRID_WIDTH);
             rect.set_height(LINE_WIDTH);
             self.canvas.fill_rect(rect).unwrap();
@@ -49,8 +49,8 @@ impl Pen {
     }
     fn draw_cell(&mut self, pos: Position) {
         let rect = Rect::new(
-            (pos.x * (CELL_WIDTH + LINE_WIDTH)) as i32,
-            (pos.y * (CELL_WIDTH + LINE_WIDTH)) as i32,
+            i32::try_from(pos.x * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
+            i32::try_from(pos.y * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
             CELL_WIDTH,
             CELL_WIDTH,
         );
