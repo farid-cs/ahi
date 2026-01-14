@@ -108,7 +108,7 @@ impl World {
             win: false,
         }
     }
-    pub fn handle(&mut self, ev: &WorldEvent) {
+    fn handle(&mut self, ev: WorldEvent) {
         let direction = match ev {
             WorldEvent::Up => Direction::UP,
             WorldEvent::Down => Direction::DOWN,
@@ -120,8 +120,12 @@ impl World {
             self.direction = direction;
         }
     }
-    pub fn update(&mut self) {
+    pub fn update(&mut self, ev: Option<WorldEvent>) {
         let last_segment = self.snake.body[self.snake.body.len() - 1];
+
+        if let Some(e) = ev {
+            self.handle(e);
+        }
 
         if !self.snake.step(self.direction) {
             *self = World::new();

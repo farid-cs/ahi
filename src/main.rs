@@ -7,7 +7,7 @@ mod event;
 mod world;
 use draw::*;
 use event::*;
-use world::World;
+use world::{World, WorldEvent};
 
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
 const WINDOW_WIDTH: u32 = GRID_WIDTH;
@@ -37,15 +37,24 @@ fn main() -> ExitCode {
     let mut pen = Pen::new(window);
     let mut el = EventListener::new(&sdl);
     let mut world = World::new();
-    let mut last_update_time = Instant::now();
+    let mut last_redraw_time;
+    let mut wev: Option<WorldEvent> = None;
 
     /* run */
-    while el.listen() && !world.win {
-        pen.draw(&world);
-        if last_update_time.elapsed() > MIN_STATE_DURATION {
-            el.handle(&mut world);
-            world.update();
-            last_update_time = Instant::now();
+    pen.draw(&world);
+    last_redraw_time = Instant::now();
+    while !world.win {
+        if let Some(ev) = el.next() {
+            match ev {
+                Event::Quit => break,
+                Event::World(w) => wev = wev.or(Some(w)),
+            }
+        }
+        if last_redraw_time.elapsed() > MIN_STATE_DURATION {
+            world.update(wev);
+            wev = None;
+            pen.draw(&world);
+            last_redraw_time = Instant::now();
         }
     }
 
