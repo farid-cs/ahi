@@ -28,12 +28,12 @@ pub enum WorldEvent {
 
 pub struct Snake {
     pub body: Vec<Position>,
+    pub dir: Direction,
 }
 
 pub struct World {
     pub snake: Snake,
     pub food: Position,
-    pub direction: Direction,
     pub score: u64,
     pub win: bool,
 }
@@ -64,25 +64,40 @@ impl Snake {
 
         body.push(INITIAL_POSITION);
 
-        Self { body }
+        Self {
+            body,
+            dir: Direction::RIGHT,
+        }
     }
-    fn step(&mut self, direction: Direction) -> bool {
+    fn turn(&mut self, ev: WorldEvent) {
+        let direction = match ev {
+            WorldEvent::Up => Direction::UP,
+            WorldEvent::Down => Direction::DOWN,
+            WorldEvent::Left => Direction::LEFT,
+            WorldEvent::Right => Direction::RIGHT,
+        };
+
+        if direction.x * self.dir.x + direction.y * self.dir.y == 0 {
+            self.dir = direction;
+        }
+    }
+    fn step(&mut self) -> bool {
         let range = 0..self.body.len() - 1;
         self.body.copy_within(range, 1);
         let mut head = self.body[0];
 
-        if direction.x < 0 {
+        if self.dir.x < 0 {
             head.x = head.x.wrapping_sub(1);
             head.x = cmp::min(head.x, COLUMN_COUNT - 1);
         } else {
-            head.x += u32::try_from(direction.x).unwrap();
+            head.x += u32::try_from(self.dir.x).unwrap();
             head.x %= COLUMN_COUNT;
         }
-        if direction.y < 0 {
+        if self.dir.y < 0 {
             head.y = head.y.wrapping_sub(1);
             head.y = cmp::min(head.y, ROW_COUNT - 1);
         } else {
-            head.y += u32::try_from(direction.y).unwrap();
+            head.y += u32::try_from(self.dir.y).unwrap();
             head.y %= ROW_COUNT;
         }
         self.body[0] = head;
@@ -103,31 +118,17 @@ impl World {
         World {
             snake,
             food,
-            direction: Direction::RIGHT,
             score: 0,
             win: false,
         }
     }
-    fn handle(&mut self, ev: WorldEvent) {
-        let direction = match ev {
-            WorldEvent::Up => Direction::UP,
-            WorldEvent::Down => Direction::DOWN,
-            WorldEvent::Left => Direction::LEFT,
-            WorldEvent::Right => Direction::RIGHT,
-        };
-
-        if direction.x * self.direction.x + direction.y * self.direction.y == 0 {
-            self.direction = direction;
-        }
-    }
-    pub fn update(&mut self, ev: Option<WorldEvent>) {
+    pub fn update(&mut self, event: Option<WorldEvent>) {
         let last_segment = self.snake.body[self.snake.body.len() - 1];
 
-        if let Some(e) = ev {
-            self.handle(e);
+        if let Some(ev) = event {
+            self.snake.turn(ev);
         }
-
-        if !self.snake.step(self.direction) {
+        if !self.snake.step() {
             *self = World::new();
             return;
         }
