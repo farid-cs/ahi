@@ -60,9 +60,11 @@ fn spawn_food(snake: &Snake) -> Position {
 
 impl Snake {
     fn new() -> Self {
-        Self {
-            body: vec![INITIAL_POSITION],
-        }
+        let mut body = Vec::with_capacity(usize::try_from(COLUMN_COUNT * ROW_COUNT).unwrap());
+
+        body.push(INITIAL_POSITION);
+
+        Self { body }
     }
     fn step(&mut self, direction: Direction) -> bool {
         let range = 0..self.body.len() - 1;
