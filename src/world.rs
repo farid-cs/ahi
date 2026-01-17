@@ -1,7 +1,7 @@
 use std::cmp;
 
-pub const COLUMN_COUNT: u32 = 16;
-pub const ROW_COUNT: u32 = 10;
+pub const COLUMN_COUNT: u16 = 16;
+pub const ROW_COUNT: u16 = 10;
 const INITIAL_POSITION: Position = Position {
     x: COLUMN_COUNT / 2,
     y: ROW_COUNT / 2,
@@ -9,8 +9,8 @@ const INITIAL_POSITION: Position = Position {
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Position {
-    pub x: u32,
-    pub y: u32,
+    pub x: u16,
+    pub y: u16,
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -60,7 +60,7 @@ fn spawn_food(snake: &Snake) -> Position {
 
 impl Snake {
     fn new() -> Self {
-        let mut body = Vec::with_capacity(usize::try_from(COLUMN_COUNT * ROW_COUNT).unwrap());
+        let mut body = Vec::with_capacity(usize::from(COLUMN_COUNT * ROW_COUNT));
 
         body.push(INITIAL_POSITION);
 
@@ -90,14 +90,14 @@ impl Snake {
             head.x = head.x.wrapping_sub(1);
             head.x = cmp::min(head.x, COLUMN_COUNT - 1);
         } else {
-            head.x += u32::try_from(self.dir.x).unwrap();
+            head.x += u16::try_from(self.dir.x).unwrap();
             head.x %= COLUMN_COUNT;
         }
         if self.dir.y < 0 {
             head.y = head.y.wrapping_sub(1);
             head.y = cmp::min(head.y, ROW_COUNT - 1);
         } else {
-            head.y += u32::try_from(self.dir.y).unwrap();
+            head.y += u16::try_from(self.dir.y).unwrap();
             head.y %= ROW_COUNT;
         }
         self.body[0] = head;

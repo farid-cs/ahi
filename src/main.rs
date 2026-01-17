@@ -10,12 +10,12 @@ use event::*;
 use world::{World, WorldEvent};
 
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
-const WINDOW_WIDTH: u32 = GRID_WIDTH;
-const WINDOW_HEIGHT: u32 = GRID_HEIGHT;
+const WINDOW_WIDTH: u16 = GRID_WIDTH;
+const WINDOW_HEIGHT: u16 = GRID_HEIGHT;
 const MIN_STATE_DURATION: Duration = Duration::from_millis(200);
 
 fn main() -> ExitCode {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<_> = env::args().collect();
 
     if args.len() > 1 {
         if args[1] != "-v" {
@@ -30,7 +30,7 @@ fn main() -> ExitCode {
     let sdl = sdl3::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT)
+        .window(WINDOW_TITLE, WINDOW_WIDTH.into(), WINDOW_HEIGHT.into())
         .position_centered()
         .build()
         .unwrap();

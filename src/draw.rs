@@ -5,10 +5,10 @@ use sdl3::video::Window;
 
 use crate::world::{COLUMN_COUNT, Position, ROW_COUNT, Snake, World};
 
-const CELL_WIDTH: u32 = 90;
-const LINE_WIDTH: u32 = 1;
-pub const GRID_WIDTH: u32 = COLUMN_COUNT * CELL_WIDTH + (COLUMN_COUNT - 1) * LINE_WIDTH;
-pub const GRID_HEIGHT: u32 = ROW_COUNT * CELL_WIDTH + ROW_COUNT * LINE_WIDTH;
+const CELL_WIDTH: u16 = 90;
+const LINE_WIDTH: u16 = 1;
+pub const GRID_WIDTH: u16 = COLUMN_COUNT * CELL_WIDTH + (COLUMN_COUNT - 1) * LINE_WIDTH;
+pub const GRID_HEIGHT: u16 = ROW_COUNT * CELL_WIDTH + ROW_COUNT * LINE_WIDTH;
 
 const COLOR_BACKGROUND: Color = Color::RGBA(0xBE, 0xBE, 0xBE, 0xFF);
 const COLOR_GRID: Color = Color::RGBA(0x00, 0x00, 0x00, 0xFF);
@@ -32,18 +32,18 @@ impl Pen {
         self.canvas.set_draw_color(COLOR_GRID);
 
         for line in 0..COLUMN_COUNT - 1 {
-            rect.set_x(i32::try_from(line * (CELL_WIDTH + LINE_WIDTH) + (CELL_WIDTH)).unwrap());
+            rect.set_x(i32::from(line * (CELL_WIDTH + LINE_WIDTH) + CELL_WIDTH));
             rect.set_y(0);
-            rect.set_width(LINE_WIDTH);
-            rect.set_height(GRID_HEIGHT);
+            rect.set_width(LINE_WIDTH.into());
+            rect.set_height(GRID_HEIGHT.into());
             self.canvas.fill_rect(rect).unwrap();
         }
 
         for line in 0..ROW_COUNT {
             rect.set_x(0);
-            rect.set_y(i32::try_from(line * (CELL_WIDTH + LINE_WIDTH) + CELL_WIDTH).unwrap());
-            rect.set_width(GRID_WIDTH);
-            rect.set_height(LINE_WIDTH);
+            rect.set_y(i32::from(line * (CELL_WIDTH + LINE_WIDTH) + CELL_WIDTH));
+            rect.set_width(GRID_WIDTH.into());
+            rect.set_height(LINE_WIDTH.into());
             self.canvas.fill_rect(rect).unwrap();
         }
     }
@@ -51,8 +51,8 @@ impl Pen {
         let rect = Rect::new(
             i32::try_from(pos.x * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
             i32::try_from(pos.y * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
-            CELL_WIDTH,
-            CELL_WIDTH,
+            CELL_WIDTH.into(),
+            CELL_WIDTH.into(),
         );
 
         self.canvas.fill_rect(rect).unwrap();
