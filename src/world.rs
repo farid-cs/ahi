@@ -45,12 +45,12 @@ impl Direction {
     const LEFT: Self = Self { x: -1, y: 0 };
 }
 
-fn spawn_food(snake: &Snake) -> Position {
+fn spawn_food<'a>(mut segments: impl Iterator<Item = &'a Position>) -> Position {
     for x in 0..COLUMN_COUNT {
         for y in 0..ROW_COUNT {
             let pos = Position { x, y };
 
-            if !snake.body.contains(&pos) {
+            if !segments.any(|seg| seg == &pos) {
                 return pos;
             }
         }
@@ -113,7 +113,7 @@ impl Snake {
 impl World {
     pub fn new() -> Self {
         let snake = Snake::new();
-        let food = spawn_food(&snake);
+        let food = spawn_food(snake.body.iter());
 
         World {
             snake,
@@ -140,7 +140,7 @@ impl World {
                 return;
             }
             self.score += 1;
-            self.food = spawn_food(&self.snake);
+            self.food = spawn_food(self.snake.body.iter());
         }
     }
 }
