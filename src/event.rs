@@ -28,10 +28,10 @@ impl EventListener {
                 SdlEvent::KeyDown {
                     keycode: Some(key), ..
                 } => match key {
-                    Keycode::Up => ev = ev.or(Some(Event::World(WorldEvent::Up))),
-                    Keycode::Down => ev = ev.or(Some(Event::World(WorldEvent::Down))),
-                    Keycode::Left => ev = ev.or(Some(Event::World(WorldEvent::Left))),
-                    Keycode::Right => ev = ev.or(Some(Event::World(WorldEvent::Right))),
+                    Keycode::Up => _ = ev.get_or_insert(Event::World(WorldEvent::Up)),
+                    Keycode::Down => _ = ev.get_or_insert(Event::World(WorldEvent::Down)),
+                    Keycode::Left => _ = ev.get_or_insert(Event::World(WorldEvent::Left)),
+                    Keycode::Right => _ = ev.get_or_insert(Event::World(WorldEvent::Right)),
                     _ => {}
                 },
                 _ => {}
