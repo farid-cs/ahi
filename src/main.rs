@@ -29,19 +29,19 @@ fn main() -> ExitCode {
     /* setup */
     let sdl = sdl3::init().unwrap();
     let video = sdl.video().unwrap();
-    let window = video
+    let mut canvas = video
         .window(WINDOW_TITLE, WINDOW_WIDTH.into(), WINDOW_HEIGHT.into())
         .position_centered()
         .build()
-        .unwrap();
-    let mut pen = Pen::new(window);
+        .unwrap()
+        .into_canvas();
     let mut el = EventListener::new(&sdl);
     let mut world = World::new();
     let mut last_redraw_time;
     let mut wev: Option<WorldEvent> = None;
 
     /* run */
-    pen.draw(&world);
+    draw(&mut canvas, &world);
     last_redraw_time = Instant::now();
     while !world.win {
         if let Some(ev) = el.next() {
@@ -53,7 +53,7 @@ fn main() -> ExitCode {
         if last_redraw_time.elapsed() > MIN_STATE_DURATION {
             world.update(wev);
             wev = None;
-            pen.draw(&world);
+            draw(&mut canvas, &world);
             last_redraw_time = Instant::now();
         }
     }
