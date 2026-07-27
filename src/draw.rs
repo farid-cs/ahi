@@ -50,15 +50,13 @@ fn draw_cell(canvas: &mut Canvas<Window>, pos: Position) {
 }
 
 fn draw_snake(canvas: &mut Canvas<Window>, snake: &Snake) {
-    let head = snake.body[0];
+    canvas.set_draw_color(COLOR_HEAD);
+    draw_cell(canvas, snake.body[0]);
 
     canvas.set_draw_color(COLOR_BODY);
     for segment in &snake.body[1..] {
         draw_cell(canvas, *segment);
     }
-
-    canvas.set_draw_color(COLOR_HEAD);
-    draw_cell(canvas, head);
 }
 
 fn draw_food(canvas: &mut Canvas<Window>, food: Position) {
