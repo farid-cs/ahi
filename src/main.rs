@@ -35,7 +35,7 @@ fn main() -> ExitCode {
         .build()
         .unwrap()
         .into_canvas();
-    let mut el = EventListener::new(&sdl);
+    let mut event_pump = sdl.event_pump().unwrap();
     let mut world = World::new();
     let mut last_redraw_time;
     let mut wev: Option<WorldEvent> = None;
@@ -44,7 +44,7 @@ fn main() -> ExitCode {
     draw(&mut canvas, &world);
     last_redraw_time = Instant::now();
     while !world.win {
-        if let Some(ev) = el.next() {
+        if let Some(ev) = next_event(&mut event_pump) {
             match ev {
                 Event::Quit => break,
                 Event::World(w) => wev = wev.or(Some(w)),

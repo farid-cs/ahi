@@ -26,6 +26,12 @@ pub enum WorldEvent {
     Left,
 }
 
+enum Block {
+    Empty,
+    Snake,
+    Food,
+}
+
 pub struct Snake {
     pub body: Vec<Position>,
     pub dir: Direction,
@@ -45,12 +51,12 @@ impl Direction {
     const LEFT: Self = Self { x: -1, y: 0 };
 }
 
-fn spawn_food<'a>(mut segments: impl Iterator<Item = &'a Position>) -> Position {
+fn spawn_food(body: &[Position]) -> Position {
     for x in 0..COLUMN_COUNT {
         for y in 0..ROW_COUNT {
             let pos = Position { x, y };
 
-            if !segments.any(|seg| seg == &pos) {
+            if !body.contains(&pos) {
                 return pos;
             }
         }
@@ -81,7 +87,8 @@ impl Snake {
             self.dir = direction;
         }
     }
-    fn step(&mut self) -> bool {
+    fn step(&mut self, food: Position) -> Block {
+        let last_segment = *self.body.last().unwrap();
         let range = 0..self.body.len() - 1;
         self.body.copy_within(range, 1);
         let mut head = self.body[0];
@@ -103,17 +110,22 @@ impl Snake {
         self.body[0] = head;
 
         if self.body[1..].contains(&head) {
-            return false;
+            return Block::Snake;
         }
 
-        true
+        if head == food {
+            self.body.push(last_segment);
+            return Block::Food;
+        }
+
+        Block::Empty
     }
 }
 
 impl World {
     pub fn new() -> Self {
         let snake = Snake::new();
-        let food = spawn_food(snake.body.iter());
+        let food = spawn_food(&snake.body);
 
         World {
             snake,
@@ -123,24 +135,21 @@ impl World {
         }
     }
     pub fn update(&mut self, event: Option<WorldEvent>) {
-        let last_segment = self.snake.body[self.snake.body.len() - 1];
-
         if let Some(ev) = event {
             self.snake.turn(ev);
         }
-        if !self.snake.step() {
-            *self = World::new();
-            return;
-        }
 
-        if self.snake.body[0] == self.food {
-            self.snake.body.push(last_segment);
-            if self.snake.body.len() == usize::try_from(COLUMN_COUNT * ROW_COUNT).unwrap() {
-                self.win = true;
-                return;
-            }
-            self.score += 1;
-            self.food = spawn_food(self.snake.body.iter());
+        match self.snake.step(self.food) {
+            Block::Empty => (),
+            Block::Snake => *self = World::new(),
+            Block::Food => {
+                if self.snake.body.len() == usize::from(COLUMN_COUNT * ROW_COUNT) {
+                    self.win = true;
+                    return;
+                }
+                self.score += 1;
+                self.food = spawn_food(&self.snake.body);
+            },
         }
     }
 }
