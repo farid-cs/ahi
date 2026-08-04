@@ -40,8 +40,8 @@ fn draw_grid(canvas: &mut Canvas<Window>) {
 
 fn draw_cell(canvas: &mut Canvas<Window>, pos: Position) {
     let rect = Rect::new(
-        i32::try_from(pos.x * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
-        i32::try_from(pos.y * (CELL_WIDTH + LINE_WIDTH)).unwrap(),
+        i32::from(pos.x * (CELL_WIDTH + LINE_WIDTH)),
+        i32::from(pos.y * (CELL_WIDTH + LINE_WIDTH)),
         CELL_WIDTH.into(),
         CELL_WIDTH.into(),
     );
@@ -64,7 +64,7 @@ fn draw_food(canvas: &mut Canvas<Window>, food: Position) {
     draw_cell(canvas, food);
 }
 
-pub fn draw(canvas: &mut Canvas<Window>, w: &World) {
+pub fn draw_scene(canvas: &mut Canvas<Window>, w: &World) {
     canvas.set_draw_color(COLOR_BACKGROUND);
     canvas.clear();
 

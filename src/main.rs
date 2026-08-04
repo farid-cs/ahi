@@ -2,12 +2,13 @@ use std::env;
 use std::process::ExitCode;
 use std::time::{Duration, Instant};
 
+use draw::{GRID_HEIGHT, GRID_WIDTH, draw_scene};
+use event::{Event, next_event};
+use world::{Direction, World};
+
 mod draw;
 mod event;
 mod world;
-use draw::*;
-use event::*;
-use world::{World, WorldEvent};
 
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
 const WINDOW_WIDTH: u16 = GRID_WIDTH;
@@ -38,22 +39,22 @@ fn main() -> ExitCode {
     let mut event_pump = sdl.event_pump().unwrap();
     let mut world = World::new();
     let mut last_redraw_time;
-    let mut wev: Option<WorldEvent> = None;
+    let mut dir: Option<Direction> = None;
 
     /* run */
-    draw(&mut canvas, &world);
+    draw_scene(&mut canvas, &world);
     last_redraw_time = Instant::now();
     while !world.win {
         if let Some(ev) = next_event(&mut event_pump) {
             match ev {
                 Event::Quit => break,
-                Event::World(w) => wev = wev.or(Some(w)),
+                Event::World(w) => dir = dir.or(Some(w)),
             }
         }
         if last_redraw_time.elapsed() > MIN_STATE_DURATION {
-            world.update(wev);
-            wev = None;
-            draw(&mut canvas, &world);
+            world.update(dir);
+            dir = None;
+            draw_scene(&mut canvas, &world);
             last_redraw_time = Instant::now();
         }
     }

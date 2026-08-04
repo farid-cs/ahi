@@ -13,17 +13,10 @@ pub struct Position {
     pub y: u16,
 }
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Direction {
     pub x: i8,
     pub y: i8,
-}
-
-pub enum WorldEvent {
-    Up,
-    Right,
-    Down,
-    Left,
 }
 
 enum Block {
@@ -45,10 +38,10 @@ pub struct World {
 }
 
 impl Direction {
-    const UP: Self = Self { x: 0, y: -1 };
-    const RIGHT: Self = Self { x: 1, y: 0 };
-    const DOWN: Self = Self { x: 0, y: 1 };
-    const LEFT: Self = Self { x: -1, y: 0 };
+    pub const UP: Self = Self { x: 0, y: -1 };
+    pub const RIGHT: Self = Self { x: 1, y: 0 };
+    pub const DOWN: Self = Self { x: 0, y: 1 };
+    pub const LEFT: Self = Self { x: -1, y: 0 };
 }
 
 fn spawn_food(body: &[Position]) -> Position {
@@ -61,6 +54,7 @@ fn spawn_food(body: &[Position]) -> Position {
             }
         }
     }
+
     unreachable!();
 }
 
@@ -75,14 +69,7 @@ impl Snake {
             dir: Direction::RIGHT,
         }
     }
-    fn turn(&mut self, ev: WorldEvent) {
-        let direction = match ev {
-            WorldEvent::Up => Direction::UP,
-            WorldEvent::Down => Direction::DOWN,
-            WorldEvent::Left => Direction::LEFT,
-            WorldEvent::Right => Direction::RIGHT,
-        };
-
+    fn turn(&mut self, direction: Direction) {
         if direction.x * self.dir.x + direction.y * self.dir.y == 0 {
             self.dir = direction;
         }
@@ -134,9 +121,9 @@ impl World {
             win: false,
         }
     }
-    pub fn update(&mut self, event: Option<WorldEvent>) {
-        if let Some(ev) = event {
-            self.snake.turn(ev);
+    pub fn update(&mut self, dir: Option<Direction>) {
+        if let Some(dir) = dir {
+            self.snake.turn(dir);
         }
 
         match self.snake.step(self.food) {
@@ -149,7 +136,7 @@ impl World {
                 }
                 self.score += 1;
                 self.food = spawn_food(&self.snake.body);
-            },
+            }
         }
     }
 }

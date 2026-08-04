@@ -1,12 +1,12 @@
+use sdl3::EventPump;
 use sdl3::event::Event as SdlEvent;
 use sdl3::keyboard::Keycode;
-use sdl3::EventPump;
 
-use crate::world::WorldEvent;
+use crate::world::Direction;
 
 pub enum Event {
     Quit,
-    World(WorldEvent),
+    World(Direction),
 }
 
 pub fn next_event(event_pump: &mut EventPump) -> Option<Event> {
@@ -18,10 +18,10 @@ pub fn next_event(event_pump: &mut EventPump) -> Option<Event> {
             SdlEvent::KeyDown {
                 keycode: Some(key), ..
             } => match key {
-                Keycode::Up => _ = ev.get_or_insert(Event::World(WorldEvent::Up)),
-                Keycode::Down => _ = ev.get_or_insert(Event::World(WorldEvent::Down)),
-                Keycode::Left => _ = ev.get_or_insert(Event::World(WorldEvent::Left)),
-                Keycode::Right => _ = ev.get_or_insert(Event::World(WorldEvent::Right)),
+                Keycode::Up => _ = ev.get_or_insert(Event::World(Direction::UP)),
+                Keycode::Down => _ = ev.get_or_insert(Event::World(Direction::DOWN)),
+                Keycode::Left => _ = ev.get_or_insert(Event::World(Direction::LEFT)),
+                Keycode::Right => _ = ev.get_or_insert(Event::World(Direction::RIGHT)),
                 _ => {}
             },
             _ => {}
