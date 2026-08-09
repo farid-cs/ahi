@@ -1,7 +1,6 @@
 use sdl3::pixels::Color;
 use sdl3::rect::Rect;
-use sdl3::render::Canvas;
-use sdl3::video::Window;
+use sdl3::render::{Canvas, RenderTarget};
 
 use crate::world::{COLUMN_COUNT, Position, ROW_COUNT, Snake, World};
 
@@ -16,7 +15,7 @@ const COLOR_HEAD: Color = Color::RGBA(0x00, 0xFF, 0x00, 0xFF);
 const COLOR_BODY: Color = Color::RGBA(0xFF, 0xFF, 0x00, 0xFF);
 const COLOR_FOOD: Color = Color::RGBA(0x00, 0x00, 0xFF, 0xFF);
 
-fn draw_grid(canvas: &mut Canvas<Window>) {
+fn draw_grid<T: RenderTarget>(canvas: &mut Canvas<T>) {
     let mut rect = Rect::new(0, 0, 0, 0);
 
     canvas.set_draw_color(COLOR_GRID);
@@ -38,7 +37,7 @@ fn draw_grid(canvas: &mut Canvas<Window>) {
     }
 }
 
-fn draw_cell(canvas: &mut Canvas<Window>, pos: Position) {
+fn draw_cell<T: RenderTarget>(canvas: &mut Canvas<T>, pos: Position) {
     let rect = Rect::new(
         i32::from(pos.x * (CELL_WIDTH + LINE_WIDTH)),
         i32::from(pos.y * (CELL_WIDTH + LINE_WIDTH)),
@@ -49,7 +48,7 @@ fn draw_cell(canvas: &mut Canvas<Window>, pos: Position) {
     canvas.fill_rect(rect).unwrap();
 }
 
-fn draw_snake(canvas: &mut Canvas<Window>, snake: &Snake) {
+fn draw_snake<T: RenderTarget>(canvas: &mut Canvas<T>, snake: &Snake) {
     canvas.set_draw_color(COLOR_HEAD);
     draw_cell(canvas, snake.body[0]);
 
@@ -59,12 +58,12 @@ fn draw_snake(canvas: &mut Canvas<Window>, snake: &Snake) {
     }
 }
 
-fn draw_food(canvas: &mut Canvas<Window>, food: Position) {
+fn draw_food<T: RenderTarget>(canvas: &mut Canvas<T>, food: Position) {
     canvas.set_draw_color(COLOR_FOOD);
     draw_cell(canvas, food);
 }
 
-pub fn draw_scene(canvas: &mut Canvas<Window>, w: &World) {
+pub fn draw_scene<T: RenderTarget>(canvas: &mut Canvas<T>, w: &World) {
     canvas.set_draw_color(COLOR_BACKGROUND);
     canvas.clear();
 
