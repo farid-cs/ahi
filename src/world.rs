@@ -69,11 +69,13 @@ impl Snake {
             dir: Direction::RIGHT,
         }
     }
+
     fn turn(&mut self, direction: Direction) {
         if direction.x * self.dir.x + direction.y * self.dir.y == 0 {
             self.dir = direction;
         }
     }
+
     fn step(&mut self, food: Position) -> Block {
         let last_segment = *self.body.last().unwrap();
         let range = 0..self.body.len() - 1;
@@ -121,6 +123,7 @@ impl World {
             win: false,
         }
     }
+
     pub fn update(&mut self, dir: Option<Direction>) {
         if let Some(dir) = dir {
             self.snake.turn(dir);
