@@ -48,7 +48,7 @@ fn main() -> ExitCode {
         if let Some(ev) = next_event(&mut event_pump) {
             match ev {
                 Event::Quit => break,
-                Event::World(w) => dir = dir.or(Some(w)),
+                Event::World(w) => dir = Some(w),
             }
         }
         if last_redraw_time.elapsed() > MIN_STATE_DURATION {

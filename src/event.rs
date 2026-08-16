@@ -18,10 +18,10 @@ pub fn next_event(event_pump: &mut EventPump) -> Option<Event> {
             SdlEvent::KeyDown {
                 keycode: Some(key), ..
             } => match key {
-                Keycode::Up => _ = ev.get_or_insert(Event::World(Direction::UP)),
-                Keycode::Down => _ = ev.get_or_insert(Event::World(Direction::DOWN)),
-                Keycode::Left => _ = ev.get_or_insert(Event::World(Direction::LEFT)),
-                Keycode::Right => _ = ev.get_or_insert(Event::World(Direction::RIGHT)),
+                Keycode::Up => ev = Some(Event::World(Direction::UP)),
+                Keycode::Down => ev = Some(Event::World(Direction::DOWN)),
+                Keycode::Left => ev = Some(Event::World(Direction::LEFT)),
+                Keycode::Right => ev = Some(Event::World(Direction::RIGHT)),
                 _ => {}
             },
             _ => {}
