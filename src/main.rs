@@ -13,7 +13,7 @@ mod world;
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
 const WINDOW_WIDTH: u16 = GRID_WIDTH;
 const WINDOW_HEIGHT: u16 = GRID_HEIGHT;
-const MIN_STATE_DURATION: Duration = Duration::from_millis(200);
+const MIN_STEP_DURATION: Duration = Duration::from_millis(200);
 
 fn main() -> ExitCode {
     let args: Vec<_> = env::args().collect();
@@ -38,25 +38,26 @@ fn main() -> ExitCode {
         .into_canvas();
     let mut event_pump = sdl.event_pump().unwrap();
     let mut world = World::new();
-    let mut last_redraw_time;
     let mut dir: Option<Direction> = None;
 
     /* run */
-    draw_scene(&mut canvas, &world);
-    last_redraw_time = Instant::now();
-    while !world.win {
-        if let Some(ev) = next_event(&mut event_pump) {
-            match ev {
-                Event::Quit => break,
-                Event::World(w) => dir = Some(w),
+    'event_loop: loop {
+        draw_scene(&mut canvas, &world);
+        let last_step = Instant::now();
+
+        while last_step.elapsed() <= MIN_STEP_DURATION {
+            if let Some(ev) = next_event(&mut event_pump) {
+                match ev {
+                    Event::Quit => break 'event_loop,
+                    Event::World(w) => dir = Some(w),
+                };
             }
         }
-        if last_redraw_time.elapsed() > MIN_STATE_DURATION {
-            world.update(dir);
-            dir = None;
-            draw_scene(&mut canvas, &world);
-            last_redraw_time = Instant::now();
+        if world.win {
+            break;
         }
+        world.update(dir);
+        dir = None;
     }
 
     ExitCode::SUCCESS
