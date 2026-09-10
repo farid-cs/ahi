@@ -1,6 +1,5 @@
 use std::env;
 use std::process::ExitCode;
-use std::time::{Duration, Instant};
 
 use draw::{GRID_HEIGHT, GRID_WIDTH, draw_scene};
 use event::{Event, next_event};
@@ -13,7 +12,6 @@ mod world;
 const WINDOW_TITLE: &str = concat!("ahi ", env!("CARGO_PKG_VERSION"));
 const WINDOW_WIDTH: u16 = GRID_WIDTH;
 const WINDOW_HEIGHT: u16 = GRID_HEIGHT;
-const MIN_STEP_DURATION: Duration = Duration::from_millis(200);
 
 fn main() -> ExitCode {
     let args: Vec<_> = env::args().collect();
@@ -41,16 +39,13 @@ fn main() -> ExitCode {
     let mut dir: Option<Direction> = None;
 
     /* run */
-    'event_loop: loop {
+    loop {
         draw_scene(&mut canvas, &world);
-        let last_step = Instant::now();
 
-        while last_step.elapsed() <= MIN_STEP_DURATION {
-            if let Some(ev) = next_event(&mut event_pump) {
-                match ev {
-                    Event::Quit => break 'event_loop,
-                    Event::World(w) => dir = Some(w),
-                };
+        if let Some(ev) = next_event(&mut event_pump) {
+            match ev {
+                Event::Quit => break,
+                Event::World(w) => dir = Some(w),
             }
         }
         if world.win {
